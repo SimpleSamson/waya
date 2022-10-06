@@ -1,0 +1,445 @@
+import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+const String wayaBaseUrl = "https://waya.miradi.info/";
+
+void main() {
+  runApp(const WayaApp());
+}
+
+class WayaApp extends StatelessWidget {
+  const WayaApp({Key? key}) : super(key: key);
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        // This is the theme of your application.
+        //
+        // Try running your application with "flutter run". You'll see the
+        // application has a blue toolbar. Then, without quitting the app, try
+        // changing the primarySwatch below to Colors.green and then invoke
+        // "hot reload" (press "r" in the console where you ran "flutter run",
+        // or simply save your changes to "hot reload" in a Flutter IDE).
+        // Notice that the counter didn't reset back to zero; the application
+        // is not restarted.
+        primarySwatch: Colors.blue,
+      ),
+//      home: const WayaHomePage(title: 'Waya Home Page'),
+        home: const VoltageDivider(),
+    );
+  }
+}
+
+class WayaHomePage extends StatefulWidget {
+  const WayaHomePage({Key? key, required this.title}) : super(key: key);
+
+  // This widget is the home page of your application. It is stateful, meaning
+  // that it has a State object (defined below) that contains fields that affect
+  // how it looks.
+
+  // This class is the configuration for the state. It holds the values (in this
+  // case the title) provided by the parent (in this case the App widget) and
+  // used by the build method of the State. Fields in a Widget subclass are
+  // always marked "final".
+
+  final String title;
+
+  @override
+  State<WayaHomePage> createState() => _WayaHomePageState();
+}
+
+class _WayaHomePageState extends State<WayaHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    // This method is rerun every time setState is called, for instance as done
+    // by the _incrementCounter method above.
+    //
+    // The Flutter framework has been optimized to make rerunning build methods
+    // fast, so that you can just rebuild anything that needs updating rather
+    // than having to individually change instances of widgets.
+    return Scaffold(
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
+      ),
+      body: Center(
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
+        child: Column(
+          // Column is also a layout widget. It takes a list of children and
+          // arranges them vertically. By default, it sizes itself to fit its
+          // children horizontally, and tries to be as tall as its parent.
+          //
+          // Invoke "debug painting" (press "p" in the console, choose the
+          // "Toggle Debug Paint" action from the Flutter Inspector in Android
+          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+          // to see the wireframe for each widget.
+          //
+          // Column has various properties to control how it sizes itself and
+          // how it positions its children. Here we use mainAxisAlignment to
+          // center the children vertically; the main axis here is the vertical
+          // axis because Columns are vertical (the cross axis would be
+          // horizontal).
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            MaterialApp(
+              title: 'Resistor Value Calculator',
+              theme:  ThemeData.dark(),
+              home: const CalculatorPage(title: 'Resistor Calculator'),
+              routes: <String, WidgetBuilder>{
+                '/discussion': (BuildContext context) => const DiscPage(title: 'discussion page'),
+                '/reading': (BuildContext context) => const DiscPage(title: 'reading'),
+              },
+            )
+          ],
+        ),
+      ),
+/*
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){_exitApp()},
+        tooltip: 'exit',
+        child: const Icon(Icons.add),
+
+      ), // This trailing comma makes auto-formatting nicer for build methods.
+*/
+    );
+  }
+}
+class DiscPage extends WebView{
+  const DiscPage({Key? key, this.title}) : super(key: key);
+
+  final String? title;
+  Widget build(BuildContext context){
+    return const WebView(
+      initialUrl: wayaBaseUrl + "discussion",
+      javascriptMode: JavascriptMode.unrestricted,
+    );
+  }
+}
+class ReadPage extends StatefulWidget {
+  const ReadPage({Key? key, this.title}) : super(key: key);
+  final String? title;
+
+  @override
+//  State<ReadPage> createState() => _OfflineReadPage();
+  State<ReadPage> createState() => _OnlineReadPage();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ButtonBar(
+          buttonHeight: 27,
+          children: <ElevatedButton>[
+            ElevatedButton(
+              onPressed: (){
+                _OnlineReadPage();
+              },
+              child: const Text('Read Online'),
+            ),
+            ElevatedButton(
+              onPressed: (){
+                OfflineReadPage();
+              },
+              child: const Text('Read Offline'),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+class _OnlineReadPage extends State<ReadPage>{
+
+  Widget build(BuildContext context){
+    return WebView(
+      initialUrl: wayaBaseUrl + "reading",
+      javascriptMode: JavascriptMode.unrestricted,
+    );
+  }
+}
+class OfflineReadPage extends State<ReadPage>{
+
+  Widget build(BuildContext context){
+    //TODO: implement reading file from storage
+    throw 'not yet impl';
+  }
+}
+class CalculatorPage extends StatelessWidget{
+  // TODO: implement createState
+  const CalculatorPage({Key? key, this.title}) : super(key: key);
+  //this widget allows values or resistor to be entered
+  // throw UnimplementedError();
+  final String? title;
+  @override
+  Widget build(BuildContext context){
+    return DefaultTextStyle(
+      style: Theme.of(context).textTheme.headline4!,
+      child: Container(
+        color: Colors.white70,
+        alignment: Alignment.center,
+        child: const GroupedCalculators(),
+      ),
+    );
+  }
+}
+//create a nav bar
+class GroupedCalculators extends StatelessWidget{
+  const GroupedCalculators({Key? key}) : super(key: key);
+  @override
+  Widget ResistorInfo(BuildContext context){
+    return const TextField(
+      enabled: true,
+//        autofillHints: 'value in ohms',
+    );
+  }
+  Widget build(BuildContext context){
+    final PageController controller = PageController(initialPage: 0);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+//      scrollDirection: Axis.horizontal,
+//      controller: controller,
+
+      children: <Widget>[
+      Center(
+        //TODO: make huge
+        child: ElevatedButton(
+            onPressed: (){
+              VoltageDivider();
+            },
+            child: Text('Voltage Divider Calculator'),
+      ),
+    ),
+      Center(
+        child: ElevatedButton(
+            onPressed: (){
+              ResistorCalc();
+            }, child: const Text('Resistor Value Calculator')),
+      ),
+    ],
+    );
+  }
+}
+
+//class VoltageDivider extends StatelessWidget{
+class VoltageDivider extends StatefulWidget{
+  const VoltageDivider({Key? key, this.Resistor1, this.Resistor2}) : super(key: key);
+  final TextField? Resistor1;
+  final TextField? Resistor2;
+
+  @override
+  State<StatefulWidget> createState() => _VoltageDivider();
+}
+
+class _VoltageDivider extends State<VoltageDivider>{
+  final GlobalKey<FormState> _resistorFormKey = GlobalKey<FormState>();
+  final Future<String> resistorValue = Future<String>.delayed(
+    const Duration(seconds: 3),
+      () => 'value is 35',
+  );
+
+  var resistor1;
+
+  late double resistor1Value;
+  late double resistor2Value;
+  late double VoltageOutValue;
+  late double VoltageInValue;
+  late double OutPutVoltage;
+
+  Widget build(BuildContext context){
+    return Form(
+      key: _resistorFormKey,
+      child: Column(
+
+        //icon then 2 resistors
+        children: <Widget>[
+          Center(
+            child: Icon(
+             Icons.battery_full, //change to voltage divider
+             size: 70,
+            ),
+          ),
+          TextFormField(
+            controller: resitor1Controller,
+            decoration: const InputDecoration(
+              hintText: 'Resistor1',
+              labelText: 'Resistor 1',
+            ),
+            validator: (value){
+              if(value!.isNotEmpty){
+                resistor1Value = value as double;
+              }
+              return null;
+            },
+          ), //Resistor 1
+          TextFormField(
+            decoration: const InputDecoration(
+              hintText: 'Resistor2',
+              labelText: 'Resistor 2',
+            ),
+            validator: (value){
+              if(value!.isNotEmpty){
+                resistor2Value = value as double;
+              }
+              return null;
+            }
+          ),
+          TextFormField(
+              decoration: InputDecoration(
+                hintText: 'VoltageIn',
+                labelText: 'Voltage In',
+              ),
+              validator: (value){
+                if(value == null||value.isEmpty){
+
+                }
+                if(value!.isNotEmpty){
+                  VoltageInValue = value as double;
+                }
+                return null;
+              }
+          ),
+          TextFormField(
+              decoration: const InputDecoration(
+                hintText: 'VoltageOut',
+                labelText: 'Voltage Out',
+              ),
+              validator: (value){
+                if(value!.isNotEmpty){
+                  VoltageOutValue = value as double;
+                }
+                return null;
+              }
+          ),
+          ElevatedButton(
+              onPressed: (){
+                //return true if valid false otherwise
+                if(_resistorFormKey.currentState!.validate()){
+                  calculateValue();
+                }
+              },
+              child: const Text('Calculate')),
+          TextField(
+            decoration: InputDecoration(
+              labelText: 'Required Value',
+            ),
+          ),
+          Center(
+            child: Text(resistorText()),
+          )
+        ],
+      )
+    );
+  }
+
+  String resistorText() {
+    double x = resistor1Value + resistor2Value; //resistors
+    return x.toString();
+  }
+
+  double calculateValue() {
+    late double x;// = 0;
+    //output voltage
+    if(OutPutVoltage.toString().isEmpty || resistor1Value.toString().isEmpty) {
+      OutPutVoltage = (VoltageInValue * resistor2Value) / (resistor1Value + resistor2Value);
+      x = OutPutVoltage;
+    }
+    return x;
+  }
+}
+class ResistorCalc extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return ResistorCalcState();
+  }
+}
+class ResistorCalcState extends State<ResistorCalc>{
+  final _ResistorFormKey2 = GlobalKey<FormState>();
+
+  Color ColorBand1 = Colors.yellow;
+  Color ColorBand2 = Colors.orange;
+
+  Widget build(BuildContext context){
+    String dropdownValue = 'Red';
+
+    return Form(child: Column(
+      children: <Widget>[
+        DropdownButton<String>(
+            value: dropdownValue,
+            icon: const Icon(Icons.arrow_drop_down_circle_outlined),
+            iconSize: 17,
+            elevation: 17,
+            style: const TextStyle(color: Colors.white),
+
+        onChanged: (String? newValue){
+          setState((){
+            dropdownValue = newValue!;
+          });
+        },
+        items: <String>['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet']
+        .map<DropdownMenuItem<String>>((String value){
+          return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+          );
+        })
+        .toList(),
+        ),
+
+        TextFormField(
+          decoration: const InputDecoration(
+            labelText:  'ColorBand1',
+          ),
+        ),
+      ],
+    ));
+  }
+}
+class VoltageDividerState extends State<VoltageDivider>{
+  final _ResistorFormKey = GlobalKey<FormState>();
+
+  double Resistor1 = 0;
+  double Resistor2 = 0;
+  @override
+  Widget build(BuildContext context) {
+    //thanks to javatpoint.com for label
+    //get child =>
+    return Form(child: Column(
+      children: <Widget>[
+        TextFormField(
+          decoration: const InputDecoration(
+            labelText: 'Resistor 1',
+          ),
+          onFieldSubmitted: (String? value){
+            Resistor1 = value as double;
+          },
+        ),
+        TextFormField(
+          decoration: const InputDecoration(
+            labelText: 'Resistor 2',
+          ),
+        onFieldSubmitted: (String? value){
+            Resistor2 = value as double;
+    },
+//    TextInputType: TextInputType.number,
+        ),
+        ElevatedButton(
+            onPressed: () {
+              CalculateResistorValue();
+              },
+            child: Text('Calculate')
+        ),
+      ],
+    ));
+  }
+
+  void CalculateResistorValue() {
+    //field1+field2
+  }
+}
+class ReadingNav extends Scaffold{
+
+}
