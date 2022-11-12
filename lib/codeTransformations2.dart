@@ -222,7 +222,6 @@ class codeCalculatorState extends State<codeCalculator>{
                 children: [
               //    Text(reqValue2(codeTransformation(availableCodeType, availableCodeController.text, resultType), availableCodeType, availableCodeController.text, resultType)),
 //                   ListView(
-
                   ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,

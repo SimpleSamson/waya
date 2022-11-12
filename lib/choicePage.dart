@@ -118,8 +118,10 @@ class _ChoiceState extends State<ChoicePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const Transistor()));
-              }),
+                        builder: (context) => ResistorCalc()));
+              }
+          ),
+
           ListTile(
             minLeadingWidth: 35,
             title: Card(

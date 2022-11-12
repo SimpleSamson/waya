@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+import 'dart:ffi';
 
+import 'package:flutter/material.dart';
+import 'dart:math';
 import 'globalFx.dart';
 //TODO: check against resistor_color.dart and remove one file
 class ColorBand { //TODO add this so that color band can simply derive values
@@ -19,6 +21,7 @@ class ResistorCalc extends StatefulWidget{
     return ResistorCalcState();
   }
 }
+//TODO: change the number of color bands with user input
 class ResistorCalcState extends State<ResistorCalc>{
   final _ResistorFormKey2 = GlobalKey<FormState>();
 
@@ -33,8 +36,8 @@ class ResistorCalcState extends State<ResistorCalc>{
   String cb6dropdownValue = 'Red';
   String cb7dropdownValue = 'Red';
 
-  double ResistorCBValue = 1;
-  double? ToleranceCBValue = 1;
+  double? ResistorCBValue;// = 1;
+  double? ToleranceCBValue; // = 1;
 //  final ResistorCBValue =
   Future calcResistor() async {
     //digits in value
@@ -76,11 +79,22 @@ class ResistorCalcState extends State<ResistorCalc>{
         return null;
       }
     }
-    ResistorCBValue = ((ColorToValue(cb1dropdownValue.toString())!.Digit! + ColorToValue(cb2dropdownValue.toString())!.Digit! + ColorToValue(cb3dropdownValue.toString())!.Digit!) * ColorToValue(cb4dropdownValue.toString())!.multiplier!); // + ;
+    int exponentM = (ColorToValue(cb4dropdownValue.toString())!.multiplier!).toInt();// as int;//) as num;
+    int multiplyByThisValue = pow(10, exponentM) as int; // to get number of zeros try to concatenate this number of zeros
+    print('exponent ${exponentM}');
+    print('multiply ${multiplyByThisValue}');
+    ResistorCBValue = ((
+        ColorToValue(cb1dropdownValue)!.Digit!
+        + (int.parse(ColorToValue(cb2dropdownValue)!.Digit!.toString()))// as double)
+        + ColorToValue(cb3dropdownValue)!.Digit!
+    ) * multiplyByThisValue)/1.floor(); // NOTE: '/1.floor()' is to turn the number into a double to avoid cast error ;
+
     //in case of 4 bands the 4th band is used as tolerance
     ToleranceCBValue = (cb5dropdownValue.toString() != 'absent') ? ColorToValue(cb5dropdownValue.toString())!.tolerance : ColorToValue(cb4dropdownValue.toString())!.tolerance;
 //      } else return null;
     //  }
+    print('tolerance: ${ToleranceCBValue}'); //check here how to display on screen instead of default value
+    print('${ResistorCBValue}');
   }
   @override
   Widget build(BuildContext context){
@@ -91,7 +105,8 @@ class ResistorCalcState extends State<ResistorCalc>{
         // the App.build method, and use it to set our appbar title.
         title: wayaTitle(),
       ),
-      body: Column(
+      body: ListView(
+        children: [Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(padding: EdgeInsets.symmetric(vertical: 2, horizontal: 3), child: Image.asset('images/resistor.1.2.png' ,width: 190, height: 170),),
@@ -121,7 +136,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb1dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -149,7 +164,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb2dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -178,7 +193,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb3dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -206,7 +221,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb4dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -235,7 +250,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb5dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet', 'Absent']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -264,7 +279,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb6dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet', 'Absent']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -293,7 +308,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb7dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet', 'Absent']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -310,18 +325,21 @@ class ResistorCalcState extends State<ResistorCalc>{
                         calcResistor();
                         showDialog(context: context, builder: (BuildContext context){
                           return AlertDialog(
-                            title: Text('Resistance: ' + ResistorCBValue.toString() +'\n Tolerance:' + ToleranceCBValue.toString()),
+                            title: Text('Resistance: ${ResistorCBValue.toString()} \n Tolerance:' '${ToleranceCBValue.toString()}'),
                             actions: <Widget>[
                               ElevatedButton(onPressed: (){ Navigator.of(context).pop(); }, child: const Text('OK')),
                             ],
                           );
                         });
                       }, child: const Text("calculate")),
+                  Text('NOTE: if value of tolerance does not add up please place the color in the one after last band e.g band 5 instead of 7'),
+
                 ],
               ),
           ),
         ],
       ),
+    ])
     );
   }
 }

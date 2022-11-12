@@ -49,12 +49,10 @@ class codeTransformationsAutocomplete extends StatelessWidget{
     throw UnimplementedError();
   }
 }
-
 //source is the code that need to be transformed
 String codeTransformation(String sourceCode, String sourceCodeText, String resultCode){
-  var x; // = "Nothing";
-  final List<Map<String, dynamic>> codesJson = [
-//  var codesMap = [
+  var x;
+  const List<Map<String, dynamic>> codesJson = [
     {"Binary": "000 0000", "Oct": 0, "Decimal": 0, "Hex": "0"},
     {"Binary": "000 0001", "Oct": 1, "Decimal": 1, "Hex": "1"},
     {"Binary": "000 0010", "Oct": 2, "Decimal": 2, "Hex": "2"},
@@ -90,44 +88,9 @@ String codeTransformation(String sourceCode, String sourceCodeText, String resul
     {"Binary": "111 1111", "Oct": 177, "Decimal": 127, "Hex": "7F"}
   ];
 
-//  codesMap.forEach((element) {
-  //element["$sourceCode"] == true ? print(element["$resultCode"]) : "Nothing matches";
-//    print (element['Oct']);
-//    print(element[resultCode]);
-//    print(element[sourceCodeText]);
-//  });
-//  x = codesMap.where((element) => element[sourceCode] == true);
-//  x = codesMap.firstWhere((element) => element[sourceCode] == sourceCodeText);// orElse: ()=> {"nothing": "here", "matches": "any", "of": "your", "query": "values"});
-//   x = codesMap.where((element) => element["$sourceCode"] == true);
-//   codesMap.forEach((element){
-//    // if(element[sourceCode] == sourceCodeText){
-//     element[sourceCode].toString().contains(sourceCodeText)? x =  element : "Code Not Found. Try Again";
-//    // }
-//   });
-  //print(x);
-  //return x.toString();
-
-  //var
-//  List<Map<String, dynamic>> reqValues = codesJson.forEach((key, value) { print 'key is $key'; }); //= codesJson.where((code) => code['$sourceCode'] == $sourceCodeText); //.startsWith('$sourceCodeText'));
-//  List<dynamic> binaryVal = [reqValues[codesJson.indexOf(z'$sourceCodeText', 0)]["Binary"], 2, 3];
-//  var reqVx = binaryVal; //reqValues.toString(); //here
-  final List <Map<String, dynamic>> thecodes = codesJson;//.first['$sourceCode'];
-//  final String codeRequired = thecodes[1]['$sourceCode']['$resultCode'];//thecodes['$resultCode'];
-//  String result = wayaCodeMap().Hex.toString();
-//   if(sourceCode == "$sourceCode" && resultCode == "Hex") {
-//     result = codesJson['$sourceCode':'$sourceCode', ] as String;  //wayaCodeMap().Hex.toString();
-//   }else if(sourceCode == "$sourceCode" && resultCode == "Binary"){
-//     result = wayaCodeMap().Binary.toString();
-//   }else if(sourceCode == "$sourceCode" && resultCode == "Oct"){
-//     result = wayaCodeMap().Oct.toString();
-//   }else if(sourceCode == "$sourceCode" && resultCode == "Decimal"){
-//     result = wayaCodeMap().Decimal.toString();
-//   }
-//  print("reqvx = $reqVx and reqvalues = $reqValues");
-//  return "reqVx";//alues;
-  print(thecodes);//['$sourceCode']['$resultCode']); //.singleWhere((element) => (element) == "0"));
-//this works but returns a single value  var xg = thecodes.singleWhere((element) => element.containsValue(sourceCodeText)).toString();//.first.toString();
-  var xg = thecodes.where((element) => element.containsValue(sourceCodeText)).toString().replaceAll('({', '').replaceAll('})', '');//.first.toString();
+  final List <Map<String, dynamic>> thecodes = codesJson;
+  print(thecodes);
+  var xg = thecodes.where((element) => element.containsValue(sourceCodeText)).toString().replaceAll('({', '').replaceAll('})', '');
   print(xg);
   return xg;
 }
@@ -188,11 +151,10 @@ class codeCalculatorState extends State<codeCalculator>{
                 TextFormField(decoration: InputDecoration(labelText: "enter code", hintText: "Enter Code Here"), controller: availableCodeController,),
                 ElevatedButton(onPressed: (){
                   showDialog(context: context, builder: (BuildContext context){
-                    return AlertDialog(title: Text("Result"), content: Column(
-                      children: [
-//                  Text(requiredItem(availableCodeType, availableCodeController.text, resultType)),
-//                  Text(codeTransformation(availableCodeType, availableCodeController.text, resultType).replaceAll(RegExp(r'{'), '[').replaceAll(r'}', ']')),//.Helpers.findById(this, availableCodeType)),//Helpers.findById(this, id); //TODO: do the same(regexp) with closing and try to only show required result
-//                  Text(codeTransformation(availableCodeType, availableCodeController.text, resultType).contains(RegExp('${availableCodeController.text}')).toString().replaceAll(RegExp(r'{'), '').replaceAll(r'}', '').splitMapJoin(RegExp(availableCodeController.text.toString()), onMatch: (m)=> '${m[0]}', onNonMatch: (n) =>'Error No Match')), //TODO: do the same(regexp) with closing and try to only show required result
+                    return AlertDialog(
+                      alignment: Alignment(0.0,0.0),
+                      title: Text(resultType, textAlign: TextAlign.center),
+                      content:
                         Text(
                             codeTransformation(availableCodeType, availableCodeController.text, resultType)
                             //turn into list
@@ -201,37 +163,12 @@ class codeCalculatorState extends State<codeCalculator>{
                             //only take the value
                             .split(':')
                             .elementAt(1)
-                        //                   .replaceAll(r'{', '{')
-                        //      .replaceAll(r'}', '}, \n')
-                        //               .replaceAll(r'[', '')
-                        //               .replaceAll(r']', '')
-                        //               .split('} \n')
-                        //                 .toList()
-//                  .firstWhere((element) => element.contains(availableCodeController.text))
-                        //                .where((availableCodeType) => availableCodeType.contains("12"))
-                        //.firstWhere((availableCodeType) => availableCodeType == availableCodeController.text)
-
-
-//                      .firstWhere((element) => element.{availableCodeType} == availableCodeController.text)
-//                      .where((element) => element.contains(availableCodeController.text))
-//                      .where((element)=>element['$availableCodeType'] == '${availableCodeController.text}')
-                        //.skipWhile((element)=> element[0] != availableCodeController.text)
-                        // .map(//(e) => //e[availableCodeType])//where(
-                        //      (element) => element.contains(availableCodeController.text)
-                        //   )
-                        // .firstWhere((element) => element == availableCodeController.text)
                         // this returns ().where((element) => element == availableCodeController.text)
-                        //    .singleWhere((element) => element == availableCodeController.text, orElse: () => true)
-                        //      .elementAt(0)
-                            .toString()
-                        )//firstWhere((element) => (element[availableCodeController.text.toString()]? element[0].contains(availableCodeController.text) as String: "not found")).toString())//.allMatches('${availableCodeController.text}')),//splitMapJoin(RegExp(availableCodeController.text.toString()), onMatch: (m)=> '${m[0]}', onNonMatch: (n) =>'Error No Match')),
-//                  Text(codeTransformation(availableCodeType, availableCodeController.text, resultType).split(',').where((element) => (element[availableCodeController.text.toString()] ? element[availableCode].contains(availableCodeController.text) as String as List<dynamic>),//toList())//.allMatches(RegExp('${availableCodeController.text}'))),//.replaceAll(RegExp(r'{'), '').replaceAll(r'}', '').splitMapJoin(RegExp(availableCodeController.text.toString()), onMatch: (m)=> '${m[0]}', onNonMatch: (n) =>'Error No Match')), //TODO: do the same(regexp) with closing and try to only show required result
-//                Text(codeTransformation(availableCodeType, availableCodeController.text, resultType).split(',').where((element) => (element[availableCodeController.text.toString()!] ? element[availableCode].contains(availableCodeController.text) as String;// as List<Map<String, dynamic>>;//wayaCodeMap; //List<dynamic>;)
-//                  Text(codeTransformation(availableCodeType, availableCodeController.text, resultType)),//startsWith(availableCodeController.text))
-                      ],
-                    ), actions: <Widget>[
-                      ElevatedButton(onPressed: (){ Navigator.of(context).pop();}, child: const Text('OK')),
-                    ],);
+                            .toString(), textAlign: TextAlign.center
+                        ),
+                      actions: <Widget>[
+                        ElevatedButton(onPressed: (){ Navigator.of(context).pop();}, child: const Text('OK')),
+                      ],);
                   }, );
                 }, child: Text("Convert"),
                 )
@@ -239,36 +176,22 @@ class codeCalculatorState extends State<codeCalculator>{
             )))
     );
   }
-int showNeededIndex(String requiredIndex){
-    int x = 0;
-    if(requiredIndex == "Binary"){
-      x = 0;
-    }
-    if(requiredIndex == "Octadecimal"){
-      x = 1;
-    }
-    if(requiredIndex == "Decimal"){
-      x = 2;
-    }
-    if(requiredIndex == "Hexadecimal"){
-      x = 3;
-    }
-    return x;
-}
-// String requiredItem(String av, String avc, String rt) {
-//   Iterable x = codeTransformation(av,avc,rt).split(',');//.where((element) => (element[av!] ? element['av'].contains(avc);// as List<Map<String, dynamic>>;//wayaCodeMap; //List<dynamic>;
-//   var y;
-//   // if(resultType == "Octadecimal"){
-//   //   y = x.cOct;
-//   // }else if(resultType == "Hexadecimal"){
-//   //   y = x.cHex;
-//   // }else if(resultType == "Decimal"){
-//   //   y = x.cDecimal;
-//   // }else {y = x.cBinary;}
-//  // y = x.where((element) => element[resultType][0] == availableCodeController.text);
-//   print(x.toString());
-//   return x;//y.toString();
-// }
+  int showNeededIndex(String requiredIndex){
+      int x = 0;
+      if(requiredIndex == "Binary"){
+        x = 0;
+      }
+      if(requiredIndex == "Octadecimal"){
+        x = 1;
+      }
+      if(requiredIndex == "Decimal"){
+        x = 2;
+      }
+      if(requiredIndex == "Hexadecimal"){
+        x = 3;
+      }
+      return x;
+  }
 }
 
 

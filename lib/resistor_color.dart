@@ -80,7 +80,7 @@ class _ColorForm extends State<ColorForm>{
                     dropDownValue2 = newValue!;
                   });
                 },
-                items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver']
+                items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,

@@ -100,7 +100,7 @@ class TransistorState extends State<Transistor>{
 //                _resultsFromCalc();
                 showDialog(context: context, builder: (BuildContext context){
                   return AlertDialog(
-                    title: Text(CurrentType()),
+                    title: Text(CurrentType(), textAlign: TextAlign.center),
                     content: Text(_resultsFromCalc()), //Text('Collector : ' + CollCurrent.toString()),
                     actions: <Widget>[
                       ElevatedButton(onPressed: (){ Navigator.of(context).pop(); }, child: const Text('OK')),
