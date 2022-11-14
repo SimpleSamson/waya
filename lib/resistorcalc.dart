@@ -58,9 +58,9 @@ class ResistorCalcState extends State<ResistorCalc>{
       } else if(value == 'Red') {
         return ColorBand(2, 100, 2);
       }else if(value == 'Orange') {
-        return ColorBand(3, 1000, null);
+        return ColorBand(3, 1000, 0.05);
       }else if(value == 'Yellow') {
-        return ColorBand(4, 10000, null);
+        return ColorBand(4, 10000, 0.02);
       }else if(value == 'Green') {
         return ColorBand(5, 100000, 0.5);
       }else if(value == 'Blue') {
@@ -68,7 +68,7 @@ class ResistorCalcState extends State<ResistorCalc>{
       } else if(value == 'Violet'){
         return ColorBand(7, null, 0.1);
       }else if(value == 'Grey'){
-        return ColorBand(8, null, null);
+        return ColorBand(8, null, 0.01);
       }else if(value == 'White'){
         return ColorBand(9, null, null);
       }else if(value == 'Gold'){
@@ -80,7 +80,7 @@ class ResistorCalcState extends State<ResistorCalc>{
       }
     }
     int exponentM = (ColorToValue(cb4dropdownValue.toString())!.multiplier!).toInt();// as int;//) as num;
-    int multiplyByThisValue = pow(10, exponentM) as int; // to get number of zeros try to concatenate this number of zeros
+    int multiplyByThisValue = 10 * exponentM;//pow(10, exponentM) as int; // to get number of zeros try to concatenate this number of zeros
     print('exponent ${exponentM}');
     print('multiply ${multiplyByThisValue}');
     ResistorCBValue = ((
