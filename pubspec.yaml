@@ -1,6 +1,10 @@
 name: waya
-description: A  software for various electronic calculations, books, discussions and everything in between.
-
+description: A simple software to make some electronic calculations fast.
+  Convert Hexadecimal, Octadecimal, Binary and Decimal
+  Resistor value from color bands calculator
+  Ohms Law Calculator
+  Diode Calculator
+  Capacitor Calculator
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -89,6 +93,8 @@ flutter:
     - images/Internet_Archive.png
     - images/binary.png
     - images/stackexchange.png
+    - images/20.png
+    - images/logo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

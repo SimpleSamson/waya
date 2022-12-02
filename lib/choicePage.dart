@@ -8,7 +8,7 @@ import 'diode.dart';
 import 'globalFx.dart';
 import 'resistorcalc.dart';
 import 'transistor.dart';
-
+import 'voltageDivider.dart';
 class ChoicePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ChoiceState();
@@ -19,8 +19,6 @@ class _ChoiceState extends State<ChoicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: wayaTitle(),
       ),
       body: ListView(
@@ -38,7 +36,6 @@ class _ChoiceState extends State<ChoicePage> {
                         width: 49,
                         height: 49,
                       ),
-//                  Icon(Icons.add_a_photo_outlined, size: 49,),
                       Text("Code"),
                       TextButton.icon(
                           onPressed: () {
@@ -57,7 +54,7 @@ class _ChoiceState extends State<ChoicePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const Transistor()));
+                        builder: (context) => codeCalculator() ));
               }),
           ListTile(
               minLeadingWidth: 35,
@@ -67,12 +64,10 @@ class _ChoiceState extends State<ChoicePage> {
                   child: Column(
                     children: [
                       Image.asset('images/2.png', width: 49, height: 49),
-                      //                    Icon(Icons.add_a_photo_outlined, size: 49,),
                       Text("Transistor"),
                       TextButton.icon(
                         onPressed: () {
-                          //                      _bodyofApp(1);
-                          //                  _calculatorPages.elementAt(1);
+                          Navigator.push(context, MaterialPageRoute(builder:(context) => Transistor()));
                         },
                         icon: Icon(Icons.forward),
                         label: const Text(""),
@@ -144,6 +139,12 @@ class _ChoiceState extends State<ChoicePage> {
                 ],
               ),
             ),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => diode()));
+              }
           ),
           ListTile(
             minLeadingWidth: 35,
@@ -167,6 +168,12 @@ class _ChoiceState extends State<ChoicePage> {
                 ],
               ),
             ),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => OhmsLaw()));
+              }
           ),
           ListTile(
             minLeadingWidth: 35,
@@ -186,10 +193,49 @@ class _ChoiceState extends State<ChoicePage> {
                             MaterialPageRoute(builder: (context) => AC()));
                       },
                       icon: Icon(Icons.calculate_rounded),
-                      label: const Text("CALCULATE")),
+                      label: const Text("CALCULATE")
+                  ),
                 ],
               ),
             ),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AC())
+                );
+              }
+          ),
+          ListTile(
+            minLeadingWidth: 35,
+            title: Card(
+            elevation: 7.0,
+            child: Column(
+                children: [
+                  Image.asset(
+                    'images/20.png',
+                    width: 49,
+                    height: 49,
+                  ),
+                  Text("Voltage Divider"),
+                  TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => VoltageDivider()));
+                      },
+                      icon: Icon(Icons.calculate_rounded),
+                      label: const Text("CALCULATE")
+                  ),
+                ],
+              ),
+            ),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => VoltageDivider())
+                );
+              }
           ),
         ],
       ),

@@ -36,7 +36,9 @@ class _DiscPageState extends State<DiscPage>{
                       children: [
                         Image.asset('images/stackexchange.png', width: size.width *.21, height: size.height*0.21,),
                         Text("stackexchange"),
-                        TextButton.icon(onPressed: (){Navigator.pushNamed(context, '/stackexchange');}, icon: Icon(Icons.web), label: Text("StackExchange"))
+                        TextButton.icon(onPressed: (){
+                          Navigator.pushNamed(context, '/stackexchange');
+                          }, icon: Icon(Icons.web), label: Text("StackExchange"))
                       ],
                     ),
                   )

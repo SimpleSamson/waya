@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'globalFx.dart';
 class VoltageDivider extends StatefulWidget{
   const VoltageDivider({Key? key}):super(key:key);
   // const VoltageDivider({Key? key, this.Resistor1, this.Resistor2}) : super(key: key);
@@ -11,14 +11,14 @@ class VoltageDivider extends StatefulWidget{
 }
 
 class _VoltageDivider extends State<VoltageDivider>{
-  var OutPutVoltage = 12.0;
-  final GlobalKey<FormState> _resistorFormKey = GlobalKey<FormState>();
-  final Future<String> resistorValue = Future<String>.delayed(
-    const Duration(seconds: 3),
-        () => 'value is 35',
-  );
+  double? OutPutVoltage;// = 12.0;
+//  final GlobalKey<FormState> _resistorFormKey = GlobalKey<FormState>();
+  // final Future<String> resistorValue = Future<String>.delayed(
+  //   const Duration(seconds: 3),
+  //       () => 'value is 35',
+  // );
 
-  bool visible = false;
+ // bool visible = false;
 
   final resistor1Controller = TextEditingController();
   final resistor2Controller = TextEditingController();
@@ -28,46 +28,50 @@ class _VoltageDivider extends State<VoltageDivider>{
 
 //  var resistor1;
   Future voltdiv() async {
+  //  double? xy;
+    // setState(() {
+    //   visible = true;
+    // });
 
-    setState(() {
-      visible = true;
-    });
-
-    double resistor1Value = resistor1Controller.text as double;
-    double resistor2Value = resistor2Controller.text as double;
-    double VoltageOutValue = VoltageOutController.text as double;
-    double VoltageInValue = VoltageInController.text as double;
+    double? resistor1Value = double.tryParse(resistor1Controller.text);
+    double? resistor2Value = double.tryParse(resistor2Controller.text);
+    double? VoltageOutValue = double.tryParse(VoltageOutController.text);
+    double? VoltageInValue = double.tryParse(VoltageInController.text);
 
 //    double calculateValue() {
 //      late double x = 0;
     //output voltage
-    if(OutPutVoltage.toString().isEmpty || resistor1Value.toString().isEmpty) {
-      setState(() {
-        visible = false;
-      });
-      OutPutVoltage = (VoltageInValue * resistor2Value) / (resistor1Value + resistor2Value);
+    // if(OutPutVoltage.toString().isEmpty || resistor1Value.toString().isEmpty) {
+    //   setState(() {
+    //     visible = false;
+    //   });
+      OutPutVoltage = (VoltageInValue! * resistor2Value!) / (resistor1Value! + resistor2Value);
 //        OutPutVoltage;
-
-    }
+    //  xy = OutPutVoltage;
+   // }
+    print( OutPutVoltage.toString());
 //      return x;
 //    }
 
   }
   Widget build(BuildContext context){
     return Scaffold(
-
+      appBar: AppBar(
+        title: wayaTitle(),
+      ),
       body:
       Padding(padding: const EdgeInsets.symmetric(vertical:17, horizontal:17),
         child:
         Form(
-            key: _resistorFormKey,
-            child: Column(
+            //key: _resistorFormKey,
+            child: ListView(
               //icon then 2 resistors
               children: <Widget>[
                 Center(
-                  child: Icon(
-                    Icons.battery_full, //change to voltage divider
-                    size: 70,
+                  child: Image.asset(
+                    'images/20.png',
+                    width: 171,
+                    height: 171,
                   ),
                 ),
                 Padding(padding: const EdgeInsets.symmetric(vertical:17, horizontal:17)),
@@ -118,22 +122,22 @@ class _VoltageDivider extends State<VoltageDivider>{
               }
 */
                 ),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  controller : VoltageOutController,
-                  decoration: const InputDecoration(
-                    hintText: 'VoltageOut',
-                    labelText: 'Voltage Out',
-                  ),
-/*
-              validator: (value){
-                if(value!.isNotEmpty){
-                  VoltageOutValue = value as double;
-                }
-                return null;
-              }
-*/
-                ),
+//                 TextFormField(
+//                   keyboardType: TextInputType.number,
+//                   controller : VoltageOutController,
+//                   decoration: const InputDecoration(
+//                     hintText: 'VoltageOut',
+//                     labelText: 'Voltage Out',
+//                   ),
+// /*
+//               validator: (value){
+//                 if(value!.isNotEmpty){
+//                   VoltageOutValue = value as double;
+//                 }
+//                 return null;
+//               }
+// */
+//                 ),
                 ElevatedButton(
                     onPressed: (){
                       //return true if valid false otherwise
@@ -142,7 +146,8 @@ class _VoltageDivider extends State<VoltageDivider>{
                       voltdiv();
                       showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(
-                          title: new Text(OutPutVoltage.toString()),
+                          title: Text("Output Voltage"),
+                            content: Text(OutPutVoltage.toString()),//place a builder that gets value from OutputVoltage//(OutPutVoltage.toString()),
                           actions: <Widget>[
                             ElevatedButton(onPressed: (){ Navigator.of(context).pop(); }, child: new Text('OK')),
                           ],
@@ -152,17 +157,17 @@ class _VoltageDivider extends State<VoltageDivider>{
                     },
                     child: const Text('Calculate')
                 ),
-                Visibility(
-                    visible: visible,
-                    child: Container(
-                      margin: EdgeInsets.all(17),
-                      child: CircularProgressIndicator(),
-                    )),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Required Value',
-                  ),
-                ),
+                // Visibility(
+                //     visible: visible,
+                //     child: Container(
+                //       margin: EdgeInsets.all(17),
+                //       child: CircularProgressIndicator(),
+                //     )),
+                // TextField(
+                //   decoration: InputDecoration(
+                //     labelText: 'Required Value',
+                //   ),
+                // ),
               ],
             )
         ),

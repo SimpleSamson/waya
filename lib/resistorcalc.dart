@@ -29,13 +29,14 @@ class ResistorCalcState extends State<ResistorCalc>{
   Color ColorBand2 = Colors.orange;
   //colorbands
   String cb1dropdownValue = 'Red';
-  String cb2dropdownValue = 'Red';
-  String cb3dropdownValue = 'Red';
-  String cb4dropdownValue = 'Red';
-  String cb5dropdownValue = 'Red';
-  String cb6dropdownValue = 'Red';
-  String cb7dropdownValue = 'Red';
+  String? cb2dropdownValue = 'Red';
+  String? cb3dropdownValue = 'Red';
+  String? cb4dropdownValue = 'Red';
+  String? cb5dropdownValue = 'Red';
+  String? cb6dropdownValue = 'Red';
+  String? cb7dropdownValue = 'Red';
 
+  String? ResistorConcatVals;
   double? ResistorCBValue;// = 1;
   double? ToleranceCBValue; // = 1;
 //  final ResistorCBValue =
@@ -50,7 +51,7 @@ class ResistorCalcState extends State<ResistorCalc>{
     String cb6;
     String cb7;
 
-    ColorBand? ColorToValue(String value){
+    ColorBand? ColorToValue(String? value){
       if(value == 'Black') {
         return ColorBand(0, 1, null);
       } else if(value == 'Brown') {
@@ -76,33 +77,67 @@ class ResistorCalcState extends State<ResistorCalc>{
       }else if(value == 'Silver'){
         return ColorBand(null, 0.01, 10);
       } else if(value == 'absent'){
-        return null;
+        return ColorBand(null, null, null);
       }
     }
-    int exponentM = (ColorToValue(cb4dropdownValue.toString())!.multiplier!).toInt();// as int;//) as num;
-    int multiplyByThisValue = 10 * exponentM;//pow(10, exponentM) as int; // to get number of zeros try to concatenate this number of zeros
-    print('exponent ${exponentM}');
-    print('multiply ${multiplyByThisValue}');
-    ResistorCBValue = ((
-        ColorToValue(cb1dropdownValue)!.Digit!
-        + (int.parse(ColorToValue(cb2dropdownValue)!.Digit!.toString()))// as double)
-        + ColorToValue(cb3dropdownValue)!.Digit!
-    ) * multiplyByThisValue)/1.floor(); // NOTE: '/1.floor()' is to turn the number into a double to avoid cast error ;
+//    int exponentM = (ColorToValue(cb4dropdownValue.toString())!.multiplier!).toInt();// as int;//) as num;
+    //double? exponentM = (ColorToValue(cb4dropdownValue)!.multiplier);// as int;//) as num;
+ //   num multiplyByThisValue = pow(10, exponentM!);//this returns infinity coz of double int.parse(pow(10, exponentM!).toString());//double;//pow(10, exponentM) as int; // to get number of zeros try to concatenate this number of zeros
+   // print('exponent ${exponentM}');
+ //   print('multiply ${multiplyByThisValue}');
+    // ResistorCBValue = ((
+    //     ColorToValue(cb1dropdownValue)!.Digit!
+    //     + (int.parse(ColorToValue(cb2dropdownValue)!.Digit!.toString()))// as double)
+    //     + ColorToValue(cb3dropdownValue)!.Digit!
+    // ) * multiplyByThisValue)/1.floor();
 
-    //in case of 4 bands the 4th band is used as tolerance
-    ToleranceCBValue = (cb5dropdownValue.toString() != 'absent') ? ColorToValue(cb5dropdownValue.toString())!.tolerance : ColorToValue(cb4dropdownValue.toString())!.tolerance;
-//      } else return null;
-    //  }
-    print('tolerance: ${ToleranceCBValue}'); //check here how to display on screen instead of default value
+    ///getting multiplier
+    List<String> resV = [ColorToValue(cb1dropdownValue)!.Digit.toString(), ColorToValue(cb2dropdownValue)!.Digit.toString(), ColorToValue(cb3dropdownValue)!.Digit.toString()];
+    List<String> multiplerBandValues = resV.toString().replaceAll(RegExp(r'null,'),',').replaceAll(RegExp(r']'), '').replaceAll(RegExp(r'\['), '').split(','); //remove null values
+    int multiplierBandPosition = multiplerBandValues.length - 1;
+    double multiplierExponent = double.parse(multiplerBandValues[multiplierBandPosition]);
+    num multiplierValue = pow(10, multiplierExponent);
+    print('this is $multiplierValue');
+    ///the end of working multiplier value
+
+///    getting the colorband value
+//    List<String?> allBands = [ColorToValue(cb1dropdownValue)!.multiplier.toString(), ColorToValue(cb2dropdownValue)?.multiplier.toString(), ColorToValue(cb3dropdownValue)?.multiplier.toString(), ColorToValue(cb4dropdownValue)?.multiplier.toString(), ColorToValue(cb5dropdownValue)?.multiplier.toString() , ColorToValue(cb6dropdownValue)?.multiplier.toString()];
+    List<String?> allBands = [ColorToValue(cb1dropdownValue)!.Digit.toString(), ColorToValue(cb2dropdownValue)?.Digit.toString(), ColorToValue(cb3dropdownValue)?.Digit.toString(), ColorToValue(cb4dropdownValue)?.Digit.toString(), ColorToValue(cb5dropdownValue)?.Digit.toString() , ColorToValue(cb6dropdownValue)?.Digit.toString()];
+    List<String> resistorBandValues = allBands.toString().replaceAll(RegExp(r'null,'), '').replaceAll(RegExp(r'\['), '').replaceAll(RegExp(r']'), '').replaceAll(RegExp(r',]'), ']').split(',');
+//    List<String> digitColorBands = resistorBandValues.removeAt(resistorBandValues.length - 1) as List<String>;
+//     String? test = resistorBandValues.removeAt(resistorBandValues.length-1); //change this toString() remove last digit
+//     print('before removing $resistorBandValues');
+    final resistorBands1 = resistorBandValues.remove(resistorBandValues[resistorBandValues.length-1]); //remove last digit
+    final removelast = resistorBandValues.remove(resistorBandValues[resistorBandValues.length -1]);
+    String digitSum = resistorBandValues.join('').replaceAll(RegExp(r' '), ''); //joined values
+    String resistorBandFinalValue = (int.parse(digitSum) * multiplierValue).toString();
+    //String minusLastDigit = digitSum.remove()//now remove last digitSum and make it the multiplier
+  //  String digitSum2 = resistorBandValues.fold('0', (previousValue, element) => previousValue + element);//resistorBandValues.fold('0', (previousValue, element) => previousValue + element); //joined values 
+//    String Rvalue = digitSum * multiplierValue.ceil(); this loops infinitely
+    print('finally $resistorBandFinalValue');
+    print('all bands $allBands');
+    print('digitsum $digitSum');
+  //  print('digitsum2 $digitSum2');
+    print('resistor band val is $resistorBandValues');
+    print('bands $allBands');
+
+    //above works but dont know how to calculate resistor value
+    //double resistorValue = double.parse(digitColorBands.join()) * multiplierValue;
+    //print( 'this is resistor value $resistorValue');
+    //fix above and remove redundant codes
+
+//     ToleranceCBValue = (cb5dropdownValue.toString() != 'absent') ? ColorToValue(cb5dropdownValue.toString())!.tolerance : ColorToValue(cb4dropdownValue.toString())!.tolerance;
+// //find way of taking 2nd last value as the multiplier hint: try using a list then indexes with length-1 being value
+//     print('tolerance: ${ToleranceCBValue}');
     print('${ResistorCBValue}');
+    print('${ResistorConcatVals}');
   }
   @override
   Widget build(BuildContext context){
 
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
+
         title: wayaTitle(),
       ),
       body: ListView(
@@ -113,12 +148,6 @@ class ResistorCalcState extends State<ResistorCalc>{
           Form(
               child: Column(
                 children: <Widget>[
-                  /*
-              todo add a dropdown for number of cb then create the dropdowns accordingly
-               for(i<noOfBands){
-                 create new dropdown with cb$index as value
-               }
-               */
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -136,7 +165,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb1dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -164,14 +193,13 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb2dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
                           );
                         }).toList(),
-
                       ),
                     ],
                   ),
@@ -193,7 +221,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb3dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -221,7 +249,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb4dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -250,7 +278,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb5dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -279,7 +307,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb6dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -308,7 +336,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                             cb7dropdownValue = newValue!;
                           });
                         },
-                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
+                        items: <String>['Black', 'Brown', 'Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Violet', 'Grey', 'White', 'Gold', 'Silver', 'Absent']
                             .map<DropdownMenuItem<String>>((String value){
                           return DropdownMenuItem<String>(
                             value: value,
@@ -325,7 +353,7 @@ class ResistorCalcState extends State<ResistorCalc>{
                         calcResistor();
                         showDialog(context: context, builder: (BuildContext context){
                           return AlertDialog(
-                            title: Text('Resistance: ${ResistorCBValue.toString()} \n Tolerance:' '${ToleranceCBValue.toString()}'),
+                            title: Text('Resistance: ${ResistorConcatVals.toString()} \n Tolerance:' '${ToleranceCBValue.toString()}'),
                             actions: <Widget>[
                               ElevatedButton(onPressed: (){ Navigator.of(context).pop(); }, child: const Text('OK')),
                             ],

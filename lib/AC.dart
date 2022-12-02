@@ -3,22 +3,18 @@ import 'dart:ffi';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:waya/globalFx.dart';
-//import 'package:waya/main.dart';
 
-//current
 final CapacitanceController = TextEditingController();
 final VoltageStartController = TextEditingController();
 final VoltageEndController = TextEditingController();
 final TimeEndController = TextEditingController();
 final TimeStartController = TextEditingController();
 
-//voltage at time
 final VoltageController = TextEditingController();
 final TimeController = TextEditingController();
 final AngularFrequencyController = TextEditingController();
 final PhaseController = TextEditingController();
-//current at time values same as voltage at time
-//inductor voltage calc
+
 final CurrentStartController = TextEditingController();
 final CurrentFinalController = TextEditingController();
 final NumberCoilTurnsController = TextEditingController();
@@ -38,11 +34,7 @@ class _ACChoices extends State<AC>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: wayaTitle(),),
-      body: //Column(
-        //crossAxisAlignment: CrossAxisAlignment.center,
-        //mainAxisAlignment: MainAxisAlignment.center,
-        //children: <Widget>[
-            Center(
+      body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,48 +47,31 @@ class _ACChoices extends State<AC>{
                 ],
               ),
             ),
-//        ],
-//      ),
     );
   }
 }
 Future calculations() async{
-  //current
   double Capacitance = CapacitanceController.text as double;
   double VoltageStart = VoltageStartController.text as double;
   double VoltageEnd = VoltageEndController.text as double;
   double TimeEnd = TimeEndController.text as double;
   double TimeStart = TimeEndController.text as double;
 
-  //voltage at time
   double Voltage = VoltageController.text as double;
   double Time = TimeController.text as double;
   double AngularFrequency = AngularFrequencyController.text as double;
   double Phase = PhaseController.text as double;
-
-  //current
   double Current = Capacitance * ((VoltageEnd - VoltageStart) / (TimeEnd - TimeStart));
-
-  //voltage at time
   if(VoltageAtTime.toString() as double > 0) {
-//      setState(() {
-//        visible = true;
-//      });
     double VoltageAtTime = Voltage * sin((AngularFrequency * Time) + Phase);
   }
-  //current at time
   if(CurrentAtTime.toString() as double > 0) {
-//      setState(() {
-//        visible = true;
-//      });
     double CurrentAtTime = Voltage * AngularFrequency *
         cos((AngularFrequency * Time) + Phase);
   }
 }
 
 class Capacitor extends StatefulWidget{
-//  var CurrentAtTime = 0;
-
   State<StatefulWidget> createState() => _CapacitorState();
 }
 class _CapacitorState extends State<Capacitor>{
@@ -116,36 +91,6 @@ class _CapacitorState extends State<Capacitor>{
               child: Icon(Icons.calculate_outlined, size: 70,),
             ),
             Padding(padding: const EdgeInsets.symmetric(vertical:17, horizontal:17)),
-            // DropdownButton(
-            //   value:  dropdownValue,
-            //     icon: const Icon(Icons.arrow_drop_down),
-            //     iconSize: 17,
-            //     elevation: 17,
-            //     style: const TextStyle(color: Colors.black),
-            //
-            //     onChanged: (String? newValue){
-            //       setState((){
-            //         dropdownValue = newValue!;
-            //       });
-            //       if(newValue == 0){
-            //         CurrentCalculator();
-            //       }
-            //       if(newValue == 1){
-            //         VoltageAtTimeCalculator();
-            //       }
-            //       if(newValue == 2){
-            //         CurrentAtTimeCalculator();
-            //       }
-            //     },
-            //     items: <String>['Current', 'Voltage At Time', 'Current At Time']
-            //         .map<DropdownMenuItem<String>>((String value){
-            //           return DropdownMenuItem<String>(
-            //               value: value,
-            //               child: Text(value),
-            //           );
-            //     })
-            //     .toList(),
-            // ),
             TextFormField(
               keyboardType: TextInputType.number,
               controller: CapacitorChargeController,
@@ -175,8 +120,6 @@ class _CapacitorState extends State<Capacitor>{
       ),
     );
   }
-//
-//  DropdownMenuItem<String> itemChoice(value) {
   Widget? itemChoice(value) {
     if(value == 1){
       return DropdownMenuItem<String>(
@@ -213,7 +156,6 @@ class _CapacitorState extends State<Capacitor>{
 class CurrentAtTimeCalculator extends State<Capacitor> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Form(child: Column(
       children: <Widget>[
         TextFormField(
@@ -250,13 +192,11 @@ class CurrentAtTimeCalculator extends State<Capacitor> {
       ],
     ));
   }
-
 }
 
 class VoltageAtTimeCalculator extends State<Capacitor> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Form(child: Column(
       children: <Widget>[
         TextFormField(
@@ -298,7 +238,6 @@ class VoltageAtTimeCalculator extends State<Capacitor> {
 class CurrentCalculator extends State<Capacitor>{
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Form(child: Column(
       children: <Widget>[
         TextFormField(
@@ -349,8 +288,6 @@ class CurrentCalculator extends State<Capacitor>{
     ));
   }
 }
-//inductor
-//========
 class _Inductor extends State<AC>{
   final Future<Double> InductorVoltage = Future.delayed(const Duration(seconds: 7));
   final Future<Double> Time = Future.delayed(const Duration(seconds:3));
@@ -443,5 +380,4 @@ class _Inductor extends State<AC>{
       ),
     );
   }
-
 }

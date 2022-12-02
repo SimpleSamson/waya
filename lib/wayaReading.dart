@@ -35,8 +35,6 @@ class _ReadPageState extends State<ReadPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: wayaTitle(),
       ),
       body: Column(
@@ -57,8 +55,6 @@ class _ReadPageState extends State<ReadPage>{
                       ElevatedButton(
                         onPressed: (){
                           OfflineReadPage()._pickFiles();
-//                          selectStorage(context);
-//                          Navigator.pushNamed(context, '/readoffline');
                         },
                         child: const Text('Read Offline'),
                       )
@@ -79,8 +75,6 @@ class _OnlineReadPageState extends State<OnlineReadPage>{
     final size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
           title: wayaTitle(),
         ),
         body : ListView(
@@ -94,7 +88,6 @@ class _OnlineReadPageState extends State<OnlineReadPage>{
                       Image.asset('images/enwiki.png', width: size.width * 0.21,height: size.height * 0.21,),
                       Text("wikipedia"),
                       TextButton.icon(onPressed: (){
-//                        wikipediaRoute();
                         Navigator.pushNamed(context, '/wikiRoute');
                       }, icon: Icon(Icons.web), label: Text("Wikipedia"))
                     ],
@@ -151,22 +144,16 @@ class OfflineReadPage extends StatelessWidget{
 
   void _pickFiles() async {
     FileType _picici = FileType.custom;
-
-//  File offlineRes = File();
-  FilePickerResult? pickerResult = await FilePicker.platform.pickFiles(
+    FilePickerResult? pickerResult = await FilePicker.platform.pickFiles(
       type: _picici,
       allowMultiple: false,
       onFileLoading: (FilePickerStatus status) => print(status),
-      allowedExtensions: ['pdf', 'txt', 'doc', '']);//await FilePicker.platform.pickFiles();
+      allowedExtensions: ['pdf', 'txt', 'doc', '']);
   if(pickerResult != null){
     File file = File(pickerResult.files.single.path ?? "path unavailable");
-
   }
-//  PDFDocument doc = PDFDocument.fromAsset(_paths) as PDFDocument;
   List<PlatformFile>? _paths;
   String? _directoryPath;
-
-//    _resetState();
     try {
       _directoryPath = null;
       _paths = (await FilePicker.platform.pickFiles(
@@ -181,34 +168,10 @@ class OfflineReadPage extends StatelessWidget{
     } catch (e) {
       log(e.toString());
     }
-    // if (!mounted) return;
-    // setState(() {
-    //   bool _isLoading = false;
-    //   String _fileName =
-    //   _paths != null ? _paths!.map((e) => e.name).toString() : '...';
-    //   _userAborted = _paths == null;
-    // });
-
   }
 
-
-//   void _pickFiles() async{
-// //    _resetState();
-//     try{
-//       _directoryPath = null;
-//       _paths = (await FilePicker.platform.pickFiles(
-//           type: _picici,
-//           allowMultiple: false,
-//           onFileLoading: (FilePickerStatus status) => print(status),
-//           allowedExtensions: ['pdf', 'txt', 'doc', ''])) as List<PlatformFile>?;
-//     } catch(e){
-//       log(e.toString());
-//     }
-//   }
   @override
   Widget build(BuildContext context) {
-    // Creates a widget that registers a callback to veto attempts by the user to dismiss the enclosing
-    // or controllers the system's back button
   return Container(
     child: Scaffold(
       body: Card(
@@ -221,32 +184,10 @@ class OfflineReadPage extends StatelessWidget{
         }PDFDocument selectedDoc = snapshot.data as PDFDocument;
           return PDFViewer(document: selectedDoc);
         }
-      ) //PDFViewer(document: PDFDocument.fromFile(file) as PDFDocument)//AlertDialog(title: Text("pick file"), content: Text("x"),)
-      // ElevatedButton(onPressed: (){
-      //   _pickFiles(); },
-        //   child: Text("Look")),  //fileOffOutput(),
-        ),)
+      )
+      ),)
       );
   }
-
-  // fileOffOutput() {
-  //   Widget x = Text("this is a placeholder");
-  //   if(result != null){
-  //     PlatformFile file = result.files.first;
-  //     x = Row(
-  //       children : [
-  //         Text("${file.name}"),
-  //         Text("${file.bytes}"),
-  //         Text("$file.size"),
-  //         Text("$file.extension"),
-  //         Text("${file.path}"),
-  //       ],
-  //     );
-  //   } else{
-  //     //user cancelled the picker
-  //   }
-  //   return x;
-  // }
 }
 
 // class _OfflineReadPageState extends State<OfflineReadPage> {

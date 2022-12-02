@@ -9,25 +9,6 @@ class wayaCodeMap {
   String? cHex;
 
   wayaCodeMap({this.cBinary, this.cOct, this.cDecimal, this.cHex});
-
-  // String toBin(String input) {
-  //   return '$cBinary';
-  // }
-  //
-  // @override
-  // bool operator ==(Object other) {
-  //   if (other.runtimeType != runtimeType) {
-  //     return false;
-  //   }
-  //   return other is wayaCodeMap
-  //       && other.Binary == Binary
-  //       && other.Decimal == Decimal
-  //       && other.Oct == Oct
-  //       && other.Hex == Hex;
-  // }
-
-//  @override
-//  int get hashCode => hashValues(Binary, Decimal, Oct, Hex);
   wayaCodeMap.fromJson(Map<String, dynamic> json){
     cBinary = json['Binary'];
     cHex = json['Hex'];
@@ -35,21 +16,7 @@ class wayaCodeMap {
     cDecimal = json['Decimal'];
   }
 }
-class codeTransformationsAutocomplete extends StatelessWidget{
-  const codeTransformationsAutocomplete({Key? key}) : super(key:key);
-  //initialize
-  // static const List<wayaCodeMap> _wayaCodeMapOptions = <wayaCodeMap>[
-  //   wayaCodeMap(Binary: 00000000, Decimal: "0", Oct: 0, Hex: "0"),
-  //   wayaCodeMap(Binary: 00000000, Decimal: "0", Oct: 0, Hex: "0"),
-  // ];
 
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-}
-//source is the code that need to be transformed
 String codeTransformation(String sourceCode, String sourceCodeText, String resultCode){
   var x;
   const List<Map<String, dynamic>> codesJson = [
@@ -114,14 +81,12 @@ class codeCalculatorState extends State<codeCalculator>{
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                //source code
                 DropdownButtonFormField(
                   decoration: const InputDecoration(labelText: 'Select Current Format'),
                   value: availableCodeType,
                   onChanged: (String? newValue){
                     setState(() {
                       availableCodeType = newValue!;
-                      //change value of the text in results
                     });},
                   items: <String>['Decimal', 'Hexadecimal', 'Binary', 'Octadecimal']
                       .map<DropdownMenuItem<String>>((String value){
@@ -131,14 +96,12 @@ class codeCalculatorState extends State<codeCalculator>{
                     );
                   }).toList(),
                 ),
-                //destination code
                 DropdownButtonFormField(
                   decoration: const InputDecoration(labelText: 'Select Destination Format'),
                   value: resultType,
                   onChanged: (String? newValue2){
                     setState(() {
                       resultType = newValue2!;
-                      //change value of the text in results
                     });},
                   items: <String>['Hexadecimal', 'Decimal', 'Binary', 'Octadecimal']
                       .map<DropdownMenuItem<String>>((String value2){
@@ -157,13 +120,10 @@ class codeCalculatorState extends State<codeCalculator>{
                       content:
                         Text(
                             codeTransformation(availableCodeType, availableCodeController.text, resultType)
-                            //turn into list
                             .split(',')
                             .elementAt(showNeededIndex(resultType))
-                            //only take the value
                             .split(':')
                             .elementAt(1)
-                        // this returns ().where((element) => element == availableCodeController.text)
                             .toString(), textAlign: TextAlign.center
                         ),
                       actions: <Widget>[
