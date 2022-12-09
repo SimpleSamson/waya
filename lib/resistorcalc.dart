@@ -1,8 +1,9 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'globalFx.dart';
+String? resistorBandFinalValue;
+String? ToleranceCBValue; // = 1;
+
 //TODO: check against resistor_color.dart and remove one file
 class ColorBand { //TODO add this so that color band can simply derive values
   int? Digit;
@@ -37,8 +38,6 @@ class ResistorCalcState extends State<ResistorCalc>{
   String? cb7dropdownValue = 'Red';
 
   String? ResistorConcatVals;
-  double? ResistorCBValue;// = 1;
-  double? ToleranceCBValue; // = 1;
 //  final ResistorCBValue =
   Future calcResistor() async {
     //digits in value
@@ -80,20 +79,11 @@ class ResistorCalcState extends State<ResistorCalc>{
         return ColorBand(null, null, null);
       }
     }
-//    int exponentM = (ColorToValue(cb4dropdownValue.toString())!.multiplier!).toInt();// as int;//) as num;
-    //double? exponentM = (ColorToValue(cb4dropdownValue)!.multiplier);// as int;//) as num;
- //   num multiplyByThisValue = pow(10, exponentM!);//this returns infinity coz of double int.parse(pow(10, exponentM!).toString());//double;//pow(10, exponentM) as int; // to get number of zeros try to concatenate this number of zeros
-   // print('exponent ${exponentM}');
- //   print('multiply ${multiplyByThisValue}');
-    // ResistorCBValue = ((
-    //     ColorToValue(cb1dropdownValue)!.Digit!
-    //     + (int.parse(ColorToValue(cb2dropdownValue)!.Digit!.toString()))// as double)
-    //     + ColorToValue(cb3dropdownValue)!.Digit!
-    // ) * multiplyByThisValue)/1.floor();
+
 
     ///getting multiplier
-    List<String> resV = [ColorToValue(cb1dropdownValue)!.Digit.toString(), ColorToValue(cb2dropdownValue)!.Digit.toString(), ColorToValue(cb3dropdownValue)!.Digit.toString()];
-    List<String> multiplerBandValues = resV.toString().replaceAll(RegExp(r'null,'),',').replaceAll(RegExp(r']'), '').replaceAll(RegExp(r'\['), '').split(','); //remove null values
+    List<String> resV = [ColorToValue(cb1dropdownValue)!.Digit.toString(), ColorToValue(cb2dropdownValue)!.Digit.toString(), ColorToValue(cb3dropdownValue)!.Digit.toString(), ColorToValue(cb4dropdownValue)!.Digit.toString()];
+    List<String> multiplerBandValues = resV.toString().replaceAll(RegExp(r', null'),'').replaceAll(RegExp(r']'), '').replaceAll(RegExp(r'\['), '').split(','); //remove null values
     int multiplierBandPosition = multiplerBandValues.length - 1;
     double multiplierExponent = double.parse(multiplerBandValues[multiplierBandPosition]);
     num multiplierValue = pow(10, multiplierExponent);
@@ -101,36 +91,39 @@ class ResistorCalcState extends State<ResistorCalc>{
     ///the end of working multiplier value
 
 ///    getting the colorband value
-//    List<String?> allBands = [ColorToValue(cb1dropdownValue)!.multiplier.toString(), ColorToValue(cb2dropdownValue)?.multiplier.toString(), ColorToValue(cb3dropdownValue)?.multiplier.toString(), ColorToValue(cb4dropdownValue)?.multiplier.toString(), ColorToValue(cb5dropdownValue)?.multiplier.toString() , ColorToValue(cb6dropdownValue)?.multiplier.toString()];
-    List<String?> allBands = [ColorToValue(cb1dropdownValue)!.Digit.toString(), ColorToValue(cb2dropdownValue)?.Digit.toString(), ColorToValue(cb3dropdownValue)?.Digit.toString(), ColorToValue(cb4dropdownValue)?.Digit.toString(), ColorToValue(cb5dropdownValue)?.Digit.toString() , ColorToValue(cb6dropdownValue)?.Digit.toString()];
-    List<String> resistorBandValues = allBands.toString().replaceAll(RegExp(r'null,'), '').replaceAll(RegExp(r'\['), '').replaceAll(RegExp(r']'), '').replaceAll(RegExp(r',]'), ']').split(',');
-//    List<String> digitColorBands = resistorBandValues.removeAt(resistorBandValues.length - 1) as List<String>;
-//     String? test = resistorBandValues.removeAt(resistorBandValues.length-1); //change this toString() remove last digit
-//     print('before removing $resistorBandValues');
-    final resistorBands1 = resistorBandValues.remove(resistorBandValues[resistorBandValues.length-1]); //remove last digit
-    final removelast = resistorBandValues.remove(resistorBandValues[resistorBandValues.length -1]);
+    List<String?> allBands = [ColorToValue(cb1dropdownValue)!.Digit.toString(), ColorToValue(cb2dropdownValue)?.Digit.toString(), ColorToValue(cb3dropdownValue)?.Digit.toString(), ColorToValue(cb4dropdownValue)?.Digit.toString(), ColorToValue(cb5dropdownValue)?.Digit.toString() , ColorToValue(cb6dropdownValue)?.Digit.toString()];//, ColorToValue(cb7dropdownValue)?.Digit.toString()];
+    print( 'all bands $allBands');
+    List<String> resistorBandValues = allBands.toString().replaceAll(RegExp(r', null'), '').replaceAll(RegExp(r'\['), '').replaceAll(RegExp(r']'), '').replaceAll(RegExp(r',]'), ']').split(',');
+  print('null removed $resistorBandValues');
+    ///////////////the below 5 lines should return tolerance
+//    it did return resistorBandValues without nullfor a short whle when the take while is used allBands certain way
+//    print( 'before removal $resistorBandValues');
+   // var xyz =resistorBandValues.takeWhile((value) => value.replaceAll(RegExp(r',null'), ''));//.contains('null'));    //remove null values
+    var xyz = resistorBandValues.elementAt(resistorBandValues.length -1);//(element) => element == element[element.length - 1]);//.takeWhile((value) => value == resistorBandValues[resistorBandValues.length - 1]);//.takeWhile((value) => value.replaceAll(RegExp(r',null'), ''));//.contains('null'));    //remove null values
+    print('last digit is $xyz');
+    //var xy = xyz.toList();//.removeLast();    //show the last value
+   // print('second is $xy');
+
+    // ToleranceCBValue = resistorBandValues.removeWhere((element) => element == null);
+    // var x = ToleranceCBValue?.removeLast();
+
+    final resistorBands1 = resistorBandValues.remove(resistorBandValues[resistorBandValues.length - 1]); //remove last digit
+    final removelast = resistorBandValues.remove(resistorBandValues[resistorBandValues.length - 1]); //TODO NOTE this is a bit contentious coz it removes a value that is needed???????
+    //TODO: capacitor calc in form of 104 meaning 0.1uF
     String digitSum = resistorBandValues.join('').replaceAll(RegExp(r' '), ''); //joined values
-    String resistorBandFinalValue = (int.parse(digitSum) * multiplierValue).toString();
-    //String minusLastDigit = digitSum.remove()//now remove last digitSum and make it the multiplier
-  //  String digitSum2 = resistorBandValues.fold('0', (previousValue, element) => previousValue + element);//resistorBandValues.fold('0', (previousValue, element) => previousValue + element); //joined values 
-//    String Rvalue = digitSum * multiplierValue.ceil(); this loops infinitely
+    resistorBandFinalValue = (int.parse(digitSum) * multiplierValue).toString();
     print('finally $resistorBandFinalValue');
     print('all bands $allBands');
     print('digitsum $digitSum');
-  //  print('digitsum2 $digitSum2');
     print('resistor band val is $resistorBandValues');
     print('bands $allBands');
+    print(' concat ${ResistorConcatVals}');
+    // return [resistorBandFinalValue, ToleranceCBValue]; //get this to work and then in dialog get each value and place in the right place
 
-    //above works but dont know how to calculate resistor value
-    //double resistorValue = double.parse(digitColorBands.join()) * multiplierValue;
-    //print( 'this is resistor value $resistorValue');
-    //fix above and remove redundant codes
-
-//     ToleranceCBValue = (cb5dropdownValue.toString() != 'absent') ? ColorToValue(cb5dropdownValue.toString())!.tolerance : ColorToValue(cb4dropdownValue.toString())!.tolerance;
-// //find way of taking 2nd last value as the multiplier hint: try using a list then indexes with length-1 being value
-//     print('tolerance: ${ToleranceCBValue}');
-    print('${ResistorCBValue}');
-    print('${ResistorConcatVals}');
+//    ToleranceCBValue = resistorBandValues.where((element) => element[element.length -1] == true).toString; //get tolerance
+    //ToleranceCBValue = resistorBandValues.takeWhile((value) => value[value.length - 1] == true).toString();
+    ToleranceCBValue = xyz; //this works//resistorBandValues.removeLast();//.takeWhile((value) => value == value[value.length-1]) as String?;
+    print('after removal $ToleranceCBValue');
   }
   @override
   Widget build(BuildContext context){
@@ -352,8 +345,14 @@ class ResistorCalcState extends State<ResistorCalc>{
                       onPressed: (){
                         calcResistor();
                         showDialog(context: context, builder: (BuildContext context){
+                          print(resistorBandFinalValue);
                           return AlertDialog(
-                            title: Text('Resistance: ${ResistorConcatVals.toString()} \n Tolerance:' '${ToleranceCBValue.toString()}'),
+                            title:
+                            Text(
+                                'Resistance: $resistorBandFinalValue '
+                                +'\n '+
+                                'Tolerance:' '${ToleranceCBValue.toString()}'
+                            ),
                             actions: <Widget>[
                               ElevatedButton(onPressed: (){ Navigator.of(context).pop(); }, child: const Text('OK')),
                             ],
