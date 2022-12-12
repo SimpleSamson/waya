@@ -80,9 +80,20 @@ class ResistorCalcState extends State<ResistorCalc>{
       }
     }
 
+    //get tolerance
+    List<String?> toleranceV = [ColorToValue(cb1dropdownValue)!.tolerance.toString(), ColorToValue(cb2dropdownValue)!.tolerance.toString(), ColorToValue(cb3dropdownValue)?.tolerance.toString(), ColorToValue(cb4dropdownValue)?.tolerance.toString(), ColorToValue(cb5dropdownValue)?.tolerance.toString(), ColorToValue(cb6dropdownValue)?.tolerance.toString(), ColorToValue(cb7dropdownValue)?.tolerance.toString()];
+    print('tolerance is $toleranceV');
+   // get the cbx at position of last non null value
+    List<String> toleranceBandValues = toleranceV.toString().replaceAll(RegExp(r', null'),'').replaceAll(RegExp(r']'), '').replaceAll(RegExp(r'\['), '').split(','); //remove null values
+    int toleranceBandPostion = toleranceBandValues.length - 1;
+    double toleranceValue = double.parse(toleranceBandValues[toleranceBandPostion]);
+    print('this is tolerance $toleranceValue');
+    ToleranceCBValue = toleranceValue.toString();
 
     ///getting multiplier
-    List<String> resV = [ColorToValue(cb1dropdownValue)!.Digit.toString(), ColorToValue(cb2dropdownValue)!.Digit.toString(), ColorToValue(cb3dropdownValue)!.Digit.toString(), ColorToValue(cb4dropdownValue)!.Digit.toString()];
+    List<String?> resV = [ColorToValue(cb1dropdownValue)!.Digit.toString(), ColorToValue(cb2dropdownValue)!.Digit.toString(), ColorToValue(cb3dropdownValue)?.Digit.toString(), ColorToValue(cb4dropdownValue)?.Digit.toString(), ColorToValue(cb5dropdownValue)?.Digit.toString(), ColorToValue(cb6dropdownValue)?.Digit.toString()];//, ColorToValue(cb7dropdownValue)?.Digit.toString()];
+    print('resv is $resV');
+    print('ndo jio ');//${ColorToValue(cb4dropdownValue ?? cb3dropdownValue)!.Digit.toString() ?? '17'}');
     List<String> multiplerBandValues = resV.toString().replaceAll(RegExp(r', null'),'').replaceAll(RegExp(r']'), '').replaceAll(RegExp(r'\['), '').split(','); //remove null values
     int multiplierBandPosition = multiplerBandValues.length - 1;
     double multiplierExponent = double.parse(multiplerBandValues[multiplierBandPosition]);
@@ -99,7 +110,7 @@ class ResistorCalcState extends State<ResistorCalc>{
 //    it did return resistorBandValues without nullfor a short whle when the take while is used allBands certain way
 //    print( 'before removal $resistorBandValues');
    // var xyz =resistorBandValues.takeWhile((value) => value.replaceAll(RegExp(r',null'), ''));//.contains('null'));    //remove null values
-    var xyz = resistorBandValues.elementAt(resistorBandValues.length -1);//(element) => element == element[element.length - 1]);//.takeWhile((value) => value == resistorBandValues[resistorBandValues.length - 1]);//.takeWhile((value) => value.replaceAll(RegExp(r',null'), ''));//.contains('null'));    //remove null values
+    var xyz = resistorBandValues.elementAt(resistorBandValues.length - 1);//(element) => element == element[element.length - 1]);//.takeWhile((value) => value == resistorBandValues[resistorBandValues.length - 1]);//.takeWhile((value) => value.replaceAll(RegExp(r',null'), ''));//.contains('null'));    //remove null values
     print('last digit is $xyz');
     //var xy = xyz.toList();//.removeLast();    //show the last value
    // print('second is $xy');
@@ -107,7 +118,7 @@ class ResistorCalcState extends State<ResistorCalc>{
     // ToleranceCBValue = resistorBandValues.removeWhere((element) => element == null);
     // var x = ToleranceCBValue?.removeLast();
 
-    final resistorBands1 = resistorBandValues.remove(resistorBandValues[resistorBandValues.length - 1]); //remove last digit
+   // final resistorBands1 = resistorBandValues.remove(resistorBandValues[resistorBandValues.length - 1]); //remove last digit
     final removelast = resistorBandValues.remove(resistorBandValues[resistorBandValues.length - 1]); //TODO NOTE this is a bit contentious coz it removes a value that is needed???????
     //TODO: capacitor calc in form of 104 meaning 0.1uF
     String digitSum = resistorBandValues.join('').replaceAll(RegExp(r' '), ''); //joined values
@@ -122,7 +133,7 @@ class ResistorCalcState extends State<ResistorCalc>{
 
 //    ToleranceCBValue = resistorBandValues.where((element) => element[element.length -1] == true).toString; //get tolerance
     //ToleranceCBValue = resistorBandValues.takeWhile((value) => value[value.length - 1] == true).toString();
-    ToleranceCBValue = xyz; //this works//resistorBandValues.removeLast();//.takeWhile((value) => value == value[value.length-1]) as String?;
+    //ToleranceCBValue = xyz; //this works//resistorBandValues.removeLast();//.takeWhile((value) => value == value[value.length-1]) as String?;
     print('after removal $ToleranceCBValue');
   }
   @override
@@ -359,7 +370,8 @@ class ResistorCalcState extends State<ResistorCalc>{
                           );
                         });
                       }, child: const Text("calculate")),
-                  Text('NOTE: if value of tolerance does not add up please place the color in the one after last band e.g band 5 instead of 7'),
+//                  Text('NOTE: if value of tolerance does not add up please place the color in the one after last band e.g band 5 instead of 7'),
+                  Text('NOTE: This calculator does not include a temperature coefficient calculator yet. \n in case of coefficient band please DO NOT insert above or your calculations will be off.'), //TODO add coefficient calculator
 
                 ],
               ),
