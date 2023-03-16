@@ -9,7 +9,6 @@ class DiscPage extends StatefulWidget{
 
   @override
   State<StatefulWidget> createState() => _DiscPageState();
-
 }
 
 class _DiscPageState extends State<DiscPage>{

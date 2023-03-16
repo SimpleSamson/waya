@@ -9,6 +9,8 @@ import 'choicePage.dart';
 import 'globalFx.dart';
 import 'voltageDivider.dart';
 import 'wayaReading.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'adHelper.dart';
 Widget? widx;
 String? ErrorMsg;
 
@@ -17,6 +19,10 @@ void main() {
 }
 
 class WayaApp extends StatelessWidget {
+  Future<InitializationStatus> _initGoogleMobileAds(){
+    //initialize
+    return MobileAds.instance.initialize();
+  }
   const WayaApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -37,6 +43,7 @@ class WayaApp extends StatelessWidget {
         '/mitRoute': (BuildContext context) => mitRoute(),
         '/archiveRoute':(BuildContext context) => archiveRoute(),
         '/discussion':(BuildContext context) => DiscPage(),
+        '/stackexchange':(BuildContext context) => stackExchangeRoute(),
       }
     );
   }
@@ -50,6 +57,25 @@ class WayaHomePage extends StatefulWidget {
   State<WayaHomePage> createState() => _WayaHomePageState();
 }
 class _WayaHomePageState extends State<WayaHomePage> {
+  BannerAd? _wayaBannerAd;
+  //advert addition
+  void initState(){
+    BannerAd(
+      request: AdRequest(),
+      size: AdSize.banner,
+        adUnitId: adHelper.wayaBannerAdUnitId,
+        listener: BannerAdListener(onAdLoaded: (ad){
+          setState(() {
+            _wayaBannerAd = ad as BannerAd;
+          });
+        },
+        onAdFailedToLoad: (ad, error){
+          print('failed to load a banner ad: ${error.message}');
+          ad.dispose();
+        },
+        ),
+    ).load();
+  }
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -59,18 +85,49 @@ class _WayaHomePageState extends State<WayaHomePage> {
       ),
       body: Center(
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
 //          remove these
             children: <Widget>[
-              Text('What would you like to do?'),
-              ElevatedButton.icon(onPressed: (){ Navigator.pushNamed(context, '/calculators'); }, icon: Icon(Icons.calculate), label: Text('Use tools and calculators')),
-              ElevatedButton.icon(onPressed: (){ Navigator.pushNamed(context, '/read');}, icon: Icon(Icons.my_library_books_outlined), label: Text('Study')),
-              ElevatedButton.icon(onPressed: (){ Navigator.pushNamed(context, '/discussion');}, icon: Icon(Icons.wechat_outlined), label: Text('Discuss')),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('What would you like to do?'),
+                  ElevatedButton.icon(onPressed: (){ Navigator.pushNamed(context, '/calculators'); }, icon: Icon(Icons.calculate), label: Text('Use tools and calculators')),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 1.7, horizontal: 0)),
+                  ElevatedButton.icon(onPressed: (){ Navigator.pushNamed(context, '/read');}, icon: Icon(Icons.my_library_books_outlined), label: Text('Study')),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 1.7, horizontal: 0)),
+                  ElevatedButton.icon(onPressed: (){ Navigator.pushNamed(context, '/discussion');}, icon: Icon(Icons.wechat_outlined), label: Text('Discuss')),
+                ],
+              ),
+              //advert
+              SafeArea(
+                child: Stack(children: [
+                  Center(),
+                  if(_wayaBannerAd !=null )
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        width: _wayaBannerAd!.size.width.toDouble(),
+                        height: _wayaBannerAd!.size.height.toDouble(),
+                        child: AdWidget(ad: _wayaBannerAd!),
+                      ),
+                    )
+                ],),
+              ),
+
+
             ],
           ),
       ),
     ),);
+  }
+  //place in exit
+  @override
+  void dispose(){
+    _wayaBannerAd?.dispose();
+    super.dispose();
   }
 }
 class VoltageDividerState extends State<VoltageDivider>{

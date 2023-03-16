@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:waya/codeTransformations.dart';
-
 import 'AC.dart';
 import 'DCLaws.dart';
 import 'diode.dart';
@@ -24,6 +23,7 @@ class _ChoiceState extends State<ChoicePage> {
       body: ListView(
         children: <Widget>[
           Padding(padding: EdgeInsets.all(17), child: Center( child: Text('Choose a calculator'))),
+
           ListTile(
               minLeadingWidth: 35,
               title: Card(
@@ -181,20 +181,26 @@ class _ChoiceState extends State<ChoicePage> {
             elevation: 7.0,
             child: Column(
                 children: [
-                  Image.asset(
-                    'images/5.png',
-                    width: 49,
-                    height: 49,
-                  ),
-                  Text("AC"),
-                  TextButton.icon(
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => AC()));
-                      },
-                      icon: Icon(Icons.calculate_rounded),
-                      label: const Text("CALCULATE")
-                  ),
+                  Image.asset('images/1.png', width: 49, height: 49,),
+                  Text("Capacitors"),
+                  TextButton.icon(onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Capacitor()));
+                  }, icon: Icon(Icons.calculate), label: const Text(""))
+
+                  // Image.asset(
+                  //   'images/5.png',
+                  //   width: 49,
+                  //   height: 49,
+                  // ),
+                  // Text("AC"),
+                  // TextButton.icon(
+                  //     onPressed: () {
+                  //       Navigator.push(context,
+                  //           MaterialPageRoute(builder: (context) => AC()));
+                  //     },
+                  //     icon: Icon(Icons.calculate_rounded),
+                  //     label: const Text("CALCULATE")
+                  // ),
                 ],
               ),
             ),
@@ -202,7 +208,7 @@ class _ChoiceState extends State<ChoicePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AC())
+                        builder: (context) => Capacitor())
                 );
               }
           ),

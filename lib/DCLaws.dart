@@ -38,60 +38,62 @@ class _OhmsLaw extends State<OhmsLaw>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: wayaTitle(),),
-      body: Padding(padding: const EdgeInsets.symmetric(vertical: 17, horizontal: 17),
-        child: Form(key: _ohmsFormKey, child: Column(
-          key: _OhmsKey,
-          children: <Widget>[
-            Image.asset(
-              'images/7.png',
-              width: 71,
-              height: 71,
-            ),
-            Padding(padding: const EdgeInsets.all(17)),
-            TextFormField(
-              validator: (String? value){
-                return(value == null || value.isEmpty ? 'Please Enter Some Text.' : null);
-              },
-              autovalidateMode: AutovalidateMode.always,
-              keyboardType: TextInputType.number,
-              controller: CurrentController,
-              decoration: const InputDecoration(
-                hintText: 'Amperes',
-                labelText: 'Current',
+      body: ListView(
+        children: [Padding(padding: const EdgeInsets.symmetric(vertical: 17, horizontal: 17),
+          child: Form(key: _ohmsFormKey, child: Column(
+            key: _OhmsKey,
+            children: <Widget>[
+              Image.asset(
+                'images/7.png',
+                width: 71,
+                height: 71,
               ),
-            ),
-            TextFormField(
-              validator: (String? value){return(value == null || value.isEmpty ? 'Please Enter Some Text.' : null);},
-              autovalidateMode: AutovalidateMode.always,
-              keyboardType: TextInputType.number,
-              controller: ResistanceController,
-              decoration: const InputDecoration(
-                hintText: 'Ohms',
-                labelText: 'Resistance',
+              Padding(padding: const EdgeInsets.all(17)),
+              TextFormField(
+                validator: (String? value){
+                  return(value == null || value.isEmpty ? 'Please Enter Some Text.' : null);
+                },
+                autovalidateMode: AutovalidateMode.always,
+                keyboardType: TextInputType.number,
+                controller: CurrentController,
+                decoration: const InputDecoration(
+                  hintText: 'Amperes',
+                  labelText: 'Current',
+                ),
               ),
-            ),
-            ElevatedButton(onPressed: (){
-              if(FormatException().message.contains("double")){
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter valid values'),));
-              } else showDialog(context: context, builder: (BuildContext context)
-              {
-                return AlertDialog(
-                  title: Text('Voltage'),
-                  content: Text(ohmsDiv().toString() + ' V'),
-                  actions: <Widget>[
-                    ElevatedButton(onPressed: () {
-                      Navigator.of(context).pop();
-                    }, child: new Text('OK')),
-                  ],
+              TextFormField(
+                validator: (String? value){return(value == null || value.isEmpty ? 'Please Enter Some Text.' : null);},
+                autovalidateMode: AutovalidateMode.always,
+                keyboardType: TextInputType.number,
+                controller: ResistanceController,
+                decoration: const InputDecoration(
+                  hintText: 'Ohms',
+                  labelText: 'Resistance',
+                ),
+              ),
+              ElevatedButton(onPressed: (){
+                if(FormatException().message.contains("double")){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please enter valid values'),));
+                } else showDialog(context: context, builder: (BuildContext context)
+                {
+                  return AlertDialog(
+                    title: Text('Voltage'),
+                    content: Text(ohmsDiv().toString() + ' V'),
+                    actions: <Widget>[
+                      ElevatedButton(onPressed: () {
+                        Navigator.of(context).pop();
+                      }, child: new Text('OK')),
+                    ],
+                  );
+                }
                 );
-              }
-              );
-            },
-                child: const Text('=')
-            ),
-          ],
-        ),),
+              },
+                  child: const Text('=')
+              ),
+            ],
+          ),),
+        ),]
       ),
     );
   }

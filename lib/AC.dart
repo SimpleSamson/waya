@@ -39,11 +39,7 @@ class _ACChoices extends State<AC>{
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset('images/1.png', width: 191, height: 151,),
-                  Text("Capacitors"),
-                  TextButton.icon(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Capacitor()));
-                  }, icon: Icon(Icons.calculate), label: const Text(""))
+
                 ],
               ),
             ),
@@ -75,6 +71,133 @@ class Capacitor extends StatefulWidget{
   State<StatefulWidget> createState() => _CapacitorState();
 }
 class _CapacitorState extends State<Capacitor>{
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: wayaTitle()),
+      body: ListView(
+        children:<Widget>[
+          ListTile(
+              minLeadingWidth: 35,
+              title: Card(
+                elevation: 7.0,
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'images/1.png',
+                      width: 49,
+                      height: 49,
+                    ),
+                    Text("Capacitors"),
+                    TextButton.icon(
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Capacitor()));
+                        },
+                        icon: Icon(Icons.calculate_rounded),
+                        label: const Text("CALCULATE")
+                    ),
+                  ],
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Capacitor())
+                );
+              }
+          ),
+          ListTile(
+              minLeadingWidth: 35,
+              title: Card(
+                elevation: 7.0,
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'images/11.png',
+                      width: 49,
+                      height: 49,
+                    ),
+                    Text("Capacitor Writing"),
+                    TextButton.icon(
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => CapacitorWriting()));
+                        },
+                        icon: Icon(Icons.calculate_rounded),
+                        label: const Text("CALCULATE")
+                    ),
+                  ],
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CapacitorWriting())
+                );
+              }
+          ),
+        ]
+      )
+    );
+  }
+}
+
+class CapacitorWriting extends StatefulWidget {
+  State<StatefulWidget> createState() => _CapacitorWritingState();
+}
+class _CapacitorWritingState extends State<CapacitorWriting>{
+  final capacitorDigitsController = TextEditingController();
+
+  var capacitorFaceVal;
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(title: wayaTitle()),
+      body: Padding(padding: const EdgeInsets.all(17),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            TextFormField(
+              keyboardType: TextInputType.number,
+              controller: capacitorDigitsController,
+              decoration:const InputDecoration(
+                hintText:'enter values',
+                labelText: 'values',
+              )
+            ),
+            ElevatedButton(onPressed:(){
+              capacitorCalculatedValue(capacitorDigitsController.text);
+              showDialog(context: context, builder: (BuildContext context){
+                return AlertDialog(
+                  title: const Text('Capacitor Value'),
+                  content: Text(
+                      '$capacitorFaceVal'
+                          )
+                );
+              });
+            }
+                , child: const Text('CALCULATE'))
+          ]
+        )
+      )
+    );
+  }
+
+  void capacitorCalculatedValue(String digitsOnCapacitor) {
+    //for 3 digit code
+    List<dynamic> digits = digitsOnCapacitor.split('');//.cast<int>();
+    var multiplierPosition= digits.length - 1;
+    double multiplierExponent = double.parse(digits[multiplierPosition]);
+    num x = pow(10, multiplierExponent);//.toString();
+    capacitorFaceVal = x;//(capacitorCalculatedValue(capacitorDigitsController.text)).toString()
+  }
+}
+class Capacitance extends StatefulWidget{
+  State<StatefulWidget> createState() => _CapacitanceState();
+}
+class _CapacitanceState extends State<Capacitance>{
   bool visible = false;
   final CapacitorChargeController = TextEditingController();
   final CapacitorVoltageController = TextEditingController();
@@ -83,6 +206,7 @@ class _CapacitorState extends State<Capacitor>{
   Widget build(BuildContext context){
     String dropdownValue = 'Current';
     return Scaffold(
+      appBar: AppBar(title: wayaTitle()),
       body: Padding(padding: const EdgeInsets.all(17),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

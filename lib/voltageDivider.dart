@@ -49,7 +49,6 @@ class _VoltageDivider extends State<VoltageDivider>{
 //        OutPutVoltage;
     //  xy = OutPutVoltage;
    // }
-    print( OutPutVoltage.toString());
 //      return x;
 //    }
 

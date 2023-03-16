@@ -1,20 +1,25 @@
-import 'dart:developer';
-import 'dart:io';
-
+import 'dart:async';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:waya/onlinePageSources.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:pdfx/pdfx.dart';
 import 'globalFx.dart';
-import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
-//import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:xml/xml.dart';
-
-Future<PDFDocument> file() async{
-  var x = await PDFDocument.fromFile(File('/wayadocs/offlinebooks.pdf')); //File('/wayadocs/offlinebooks.xml');
-  return x;
+//PDFDocument offlinePdfDoc = File('/wayadocs/offlinebooks.pdf') as PDFDocument;
+// Future<PDFDocument> file() async{
+//   var x = await PDFDocument.fromFile(File('/wayadocs/offlinebooks.pdf')); //File('/wayadocs/offlinebooks.xml');
+//   return x;
+// }
+class chosenPdfBook{
+  EarlyInstantiationPdfSingleton earlyInstantiationPdfSingleton = EarlyInstantiationPdfSingleton();
+  String? documentx;// = earlyInstantiationPdfSingleton.thePdfLocationString(_OfflineReadPageState().PdfFilePath);// = 'wayadocs/offlinebooks.pdf';
+  String? get getDoc{
+    return earlyInstantiationPdfSingleton.thePdfLocationString(_OfflineReadPageState().PdfFilePath);// = 'wayadocs/offlinebooks.pdf';;
+  }
+  set setDoc(String documentx){
+    this.documentx = documentx;
+//    documentx = PdfDocument.openAsset(docPath) as PdfDocument;
+  }
 }
+final pdfPinchController = PdfControllerPinch(document: PdfDocument.openAsset('wayadocs/placeholder.pdf'));
 class Book{
   final bookTitle;
   final Image? bookCover;
@@ -53,9 +58,29 @@ class _ReadPageState extends State<ReadPage>{
                         child: const Text('Read Online'),
                       ),
                       ElevatedButton(
-                        onPressed: (){
-                          OfflineReadPage()._pickFiles();
-                        },
+                        onPressed: (() async {
+                          //var x = await _OfflineReadPageState().loadDocument2();
+                          //TODO: send intent with extension to an app that can open it
+
+                          //ViewWidget.builder(context, , state, (context) => null, document, loadingError);
+//                          _OfflineReadPageState()._pdfController.loadDocument(documentFuture)
+                          //_OfflineReadPageState().loadDocument2(); //?? PdfController(document: (PdfDocument.openAsset('lib/wayadocs/offlinebooks.pdf')));
+//                          _OfflineReadPageState().loadDocument();//_pickFiles();
+                          //Timer(const Duration(seconds: 7),(){
+                          //  x.then((pdfValue){ _OfflineReadPageState().loadDocument2()._pdfDoc = pdfValue; }, onError: (e){ PdfDocument.openAsset('wayadocs/underconstruction.pdf'); print(e); });
+                          //});
+                   //       x.then(
+                     //         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SimplePage(pdfString: _OfflineReadPageState().loadDocument2()._pdfDoc,)))); //continue trying here
+                          showDialog(context: context, builder: (BuildContext context){
+                            return AlertDialog(
+                              title: Text('Sorry!'),
+                              content: Text('Still under construction'),
+                              actions: [
+                                ElevatedButton(onPressed: (){ Navigator.of(context).pop(); }, child: Text('OK'))
+                              ],
+                            );
+                          });
+                        }),
                         child: const Text('Read Offline'),
                       )
                     ],
@@ -65,6 +90,7 @@ class _ReadPageState extends State<ReadPage>{
     );
   }
 }
+
 
 class OnlineReadPage extends StatefulWidget{
   @override
@@ -139,56 +165,169 @@ class _OnlineReadPageState extends State<OnlineReadPage>{
     );
   }
 }
-class OfflineReadPage extends StatelessWidget{
-  bool _isLoading = false;
+class OfflineReadPage extends StatefulWidget{
+  State<StatefulWidget> createState() => _OfflineReadPageState();
+}
 
-  void _pickFiles() async {
-    FileType _picici = FileType.custom;
-    FilePickerResult? pickerResult = await FilePicker.platform.pickFiles(
-      type: _picici,
-      allowMultiple: false,
-      onFileLoading: (FilePickerStatus status) => print(status),
-      allowedExtensions: ['pdf', 'txt', 'doc', '']);
-  if(pickerResult != null){
-    File file = File(pickerResult.files.single.path ?? "path unavailable");
+class _OfflineReadPageState extends State<OfflineReadPage>{
+  String PdfFilePath = '/lib/wayadocs/placeholder.pdf';
+  bool _isLoading = true;
+//  PDFDocument? doc;// = await PDFDocument.fromAsset('/lib/wayadocs/placeholder.pdf');
+  late PdfController _pdfController;
+
+
+  @override
+  void initState(){
+    _pdfController = PdfController(document: PdfDocument.openAsset('wayadocs/offlinebooks.pdf'),
+      initialPage: 1,
+    );//    loadDocument();
+    super.initState();
   }
-  List<PlatformFile>? _paths;
-  String? _directoryPath;
-    try {
-      _directoryPath = null;
-      _paths = (await FilePicker.platform.pickFiles(
-        type: _picici,
-        allowMultiple: false,
-        onFileLoading: (FilePickerStatus status) => print(status),
-        allowedExtensions: ['pdf', 'txt', 'doc', '']
-      ))
-          ?.files;
-    } on PlatformException catch (e) {
-      log('Unsupported operation' + e.toString());
-    } catch (e) {
-      log(e.toString());
+  @override
+  void dispose(){
+    _pdfController.dispose();
+    super.dispose();
+  }
+//  THIS ALMOST WORKS
+  // loadDocument() async {
+  //   //hint: use picker method from below method that has been commented out)
+  //   FilePickerResult? pickerResult = await FilePicker.platform.pickFiles();
+  //   var PdfPath = pickerResult?.files.single.path;
+  //   PDFDocument doc = await PDFDocument.fromAsset( '${PdfPath}');
+  // }
+//  Future<String> loadDocument2() async{
+  loadDocument2() async{
+    dynamic _pdfDoc = await EarlyInstantiationPdfSingleton().thePdfLocationString(PdfFilePath);// = PdfControllerPinch(document: PdfDocument.openAsset(PdfFilePath));//TODO: for windows remove pinch since it does not support
+
+    FileType _picici = FileType.custom;
+    FilePickerResult? pickerResult = await FilePicker.platform.pickFiles(type: _picici, allowedExtensions: ['pdf']);
+    if(pickerResult != null){
+    //  setState(() async { //PdfFilePath = pickerResult.files.single.path ?? "path unavailable";});
+        _pdfDoc = PdfDocument.openFile(pickerResult.files.single.path!);
+        _pdfController = await PdfController(document: _pdfDoc, initialPage: 1, );
+        var x = EarlyInstantiationPdfSingleton().thePdfLocationString(pickerResult.files.single.path!);
+        chosenPdfBook cpdf = chosenPdfBook();
+//        cpdf.documentx = _pdfController.document as String?;
+  //    });
     }
+    //TODO: loading online
+    //   if(pickerResult != null){
+    //     //setState((){
+    //       PdfFilePath = pickerResult.files.single.path ?? "path unavailable";
+    //       print(PdfFilePath);
+    //     //});
+    //       _pdfController = await PdfController(document: PdfDocument.openAsset(PdfFilePath));//TODO: for windows remove pinch since it does not support
+    //      // offlinePdfDoc = await PDFDocument.fromFile(File(PdfFilePath));// as PDFDocument;
+    // }
+
+    //);
+    return PdfViewBuilders(
+            options: const DefaultBuilderOptions(),
+            pageBuilder: _pageBuilder)
+     ;
+   // });
+    }
+  Future<Widget> testTheory()async{
+//    try{
+    final docy = await PdfDocument.openAsset('wayadocs/offlinebooks.pdf');
+    final page = await docy.getPage(1);
+    final pageImage = await page.render(width: page.width, height: page.height);
+    await page.close();
+    return Image(image: MemoryImage(pageImage!.bytes));
+    //  } on PlatformException catch (error){
+    //  print(error);
+    //}
+//    return Image(image: MemoryImage(pageImage!.bytes));
   }
 
   @override
-  Widget build(BuildContext context) {
-  return Container(
-    child: Scaffold(
-      body: Card(
-      child: _isLoading ?
-      Center(child: CircularProgressIndicator()) :
-      FutureBuilder(
-          builder: (BuildContext context, AsyncSnapshot<PDFDocument> snapshot){
-        if(snapshot.hasData){
-          return PDFViewer(document: file as PDFDocument);
-        }PDFDocument selectedDoc = snapshot.data as PDFDocument;
-          return PDFViewer(document: selectedDoc);
-        }
-      )
-      ),)
-      );
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(title: wayaTitle()),
+      body:
+        PdfView( //fix here
+          builders: PdfViewBuilders<DefaultBuilderOptions>(
+            options: const DefaultBuilderOptions(),
+            documentLoaderBuilder: (_) => const Center(child: CircularProgressIndicator(),),
+            pageLoaderBuilder: (_) => const Center(child: CircularProgressIndicator(),),
+            pageBuilder: _pageBuilder,
+          ),
+          controller: _pdfController,
+        )
+    );
+  }
+
+  PhotoViewGalleryPageOptions _pageBuilder(BuildContext context, Future<PdfPageImage> pageImage, int index, PdfDocument document) {
+    return PhotoViewGalleryPageOptions(imageProvider:  PdfPageImageProvider(pageImage, index, document.id),
+    minScale: PhotoViewComputedScale.contained *1,
+      maxScale: PhotoViewComputedScale.contained *2,
+      initialScale: PhotoViewComputedScale.contained * 1.0,
+      heroAttributes: PhotoViewHeroAttributes(tag: '${document.id}-$index'),
+    );
   }
 }
+
+// class _OfflineReadPageState extends State<OfflineReadPage>{
+//   bool _isLoading = false;
+//   var _picici = FileType.custom;
+//   Future _pickFiles() async {
+// //    FileType _picici = FileType.custom;
+//     FilePickerResult? pickerResult = await FilePicker.platform.pickFiles(
+//       type: _picici,
+//       allowMultiple: false,
+//       //onFileLoading: (FilePickerStatus status) => print(status),
+//       allowedExtensions: ['pdf']);//;, 'txt', 'doc', '']);
+//   if(pickerResult != null){
+//     String? PdfFilePath; //File offlinePdfFile = await file;
+// //    setState((){
+//     PdfFilePath = pickerResult.files.single.path ?? "path unavailable";
+//     print(PdfFilePath);
+//   //  });
+//     offlinePdfDoc = await PDFDocument.fromAsset('$PdfFilePath'); //as PDFDocument;
+//
+//   }
+//   List<PlatformFile>? _paths;
+//   String? _directoryPath;
+//     try {
+//       _directoryPath = null;
+//       _paths = (await FilePicker.platform.pickFiles(
+//         type: _picici,
+//         allowMultiple: false,
+//         onFileLoading: (FilePickerStatus status) => print(status),
+//         allowedExtensions: ['pdf', 'txt', 'doc', '']
+//       ))
+//           ?.files;
+//     } on PlatformException catch (e) {
+//       log('Unsupported operation' + e.toString());
+//     } catch (e) {
+//       log(e.toString());
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//   return Container(
+//     child: Scaffold(
+//       body: Card(
+//       child: _isLoading ?
+//       Center(child: CircularProgressIndicator()) :
+//       // FutureBuilder(
+//       //     builder: (BuildContext context, AsyncSnapshot<PDFDocument> snapshot){
+//       //   if(snapshot.hasData){
+//       //     return PDFViewer(document:offlinePdfDoc);// file as PDFDocument);
+//       //   } PDFDocument selectedDoc = snapshot.data as PDFDocument;
+//       //      return PDFViewer(document: selectedDoc);
+//       //   }
+//       // )
+//         PDFViewer(document: offlinePdfDoc,
+//           zoomSteps: 1
+//         )
+//       ),)
+//       );
+//   }
+// }
+//
+
 
 // class _OfflineReadPageState extends State<OfflineReadPage> {
 //   late Book libraryBook;
@@ -368,3 +507,169 @@ class OfflineReadPage extends StatelessWidget{
 //   }
 //
 //
+class ViewWidget {
+  static Widget builder(BuildContext context, PdfViewPinchBuilders builders,
+      PdfLoadingState state, WidgetBuilder loadedBuilder, PdfDocument? document, Exception? loadingError) {
+    final Widget content = () {
+      switch (state) {
+        case PdfLoadingState.loading:
+          return KeyedSubtree(key: const Key('pdfx.root.loading'),
+              child: builders.documentLoaderBuilder?.call(context) ??
+                  const SizedBox());
+        case PdfLoadingState.error:
+          return KeyedSubtree(key: const Key('pdfx.loading.error'),
+              child: builders.errorBuilder?.call(context, loadingError!) ??
+                  Center(child: Text(loadingError.toString())));
+        case PdfLoadingState.success:
+          return KeyedSubtree(
+            key: Key('pdfx.root.success.${document!.id}'),
+            child: loadedBuilder(context),);
+      }
+    }();
+    final defaultBuilder = builders as PdfViewPinchBuilders<
+        DefaultBuilderOptions>;
+    final options = defaultBuilder.options;
+    return AnimatedSwitcher(duration: options.loaderSwitchDuration,
+      transitionBuilder: options.transitionBuilder,
+      child: content,);
+  }
+
+  static Widget transitionBuilder(Widget child, Animation<double> animation) =>
+      FadeTransition(opacity: animation, child: child,);
+
+  static PhotoViewGalleryPageOptions pageBuilder(BuildContext context,
+      Future<PdfPageImage> pageImage, int index, PdfDocument document) =>
+      PhotoViewGalleryPageOptions(
+        imageProvider: PdfPageImageProvider(pageImage, index, document.id),
+        minScale: PhotoViewComputedScale.contained * 1,
+        maxScale: PhotoViewComputedScale.contained * 3.0,
+        initialScale: PhotoViewComputedScale.contained * 1.0,
+        heroAttributes: PhotoViewHeroAttributes(tag: '${document.id}-$index'),);
+}
+//      builders, state, (context) => null, document, loadingError))
+
+/*PdfViewPinch(controller: pdfPinchController, builders: PdfViewPinchBuilders<DefaultBuilderOptions>(
+options: const DefaultBuilderOptions(loaderSwitchDuration: const Duration(seconds:1), transitionBuilder: SomeWidget.transitionBuilder), documentLoaderBuilder: (_) => const Center(child: CircularProgressIndicator()), pageLoaderBuilder: (_) => const Center(child: CircularProgressIndicator()), errorBuilder: (_OfflineReadPageState, error) => Center(child: Text(error.toString()),), builder: ViewWidget.builder,))
+PdfView(
+controller:pdfController,
+builders: PdfViewBuilders<DefaultBuilderOptions>(
+pageBuilder: ViewWidget.pageBuilder,
+)
+);)
+ */
+//
+//
+class SimplePage extends StatefulWidget {
+  const SimplePage({Key? key, String? pdfString}) : super(key: key);
+  @override
+  State<SimplePage> createState() => _SimplePageState();
+}
+
+class _SimplePageState extends State<SimplePage> {
+  chosenPdfBook cpdfbk = chosenPdfBook();
+  static const int _initialPage = 2;
+  bool _isSampleDoc = true;
+  late PdfController _pdfController = PdfController(document: PdfDocument.openAsset(cpdfbk.documentx.toString()));//'wayadocs/placeholder.pdf'));
+
+  @override
+  void initState() {
+    super.initState();
+    _pdfController = PdfController(
+      document: PdfDocument.openAsset(cpdfbk.documentx.toString()),//chosenPdfBook().documentx!.toString()),//,'wayadocs/offlinebooks.pdf'), //this is the point of obtaining books
+      initialPage: _initialPage,
+    );
+  }
+
+  @override
+  void dispose() {
+    _pdfController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey,
+      appBar: AppBar(
+        title: const Text('Pdfx example'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.navigate_before),
+            onPressed: () {
+              _pdfController.previousPage(
+                curve: Curves.ease,
+                duration: const Duration(milliseconds: 100),
+              );
+            },
+          ),
+          PdfPageNumber(
+            controller: _pdfController,
+            builder: (_, loadingState, page, pagesCount) => Container(
+              alignment: Alignment.center,
+              child: Text(
+                '$page/${pagesCount ?? 0}',
+                style: const TextStyle(fontSize: 22),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.navigate_next),
+            onPressed: () {
+              _pdfController.nextPage(
+                curve: Curves.ease,
+                duration: const Duration(milliseconds: 100),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+            //  if (_isSampleDoc) {
+                _pdfController.loadDocument(PdfDocument.openAsset(EarlyInstantiationPdfSingleton().thePdfLocationString(_OfflineReadPageState().PdfFilePath.toString())));//PdfDocument.openAsset('wayadocs/offlinebooks.pdf'));
+                // print('look ${
+                //     PdfDocument.openAsset(
+                //         EarlyInstantiationPdfSingleton().
+                //         thePdfLocationString(_OfflineReadPageState().PdfFilePath.toString())
+                //     )
+                // }');//PdfDocument.openAsset('wayadocs/offlinebooks.pdf'));
+             //   _pdfController.loadDocument(PdfDocument.openAsset('wayadocs/offlinebooks.pdf'));
+         //     } else {
+        //        _pdfController.loadDocument(PdfDocument.openAsset('wayadocs/offlinebooks.pdf'));
+         //     }
+          //    _isSampleDoc = !_isSampleDoc;
+            },
+          ),
+        ],
+      ),
+      body: PdfView(
+        builders: PdfViewBuilders<DefaultBuilderOptions>(
+          options: const DefaultBuilderOptions(),
+          documentLoaderBuilder: (_) => const Center(child: CircularProgressIndicator()),
+          pageLoaderBuilder: (_) => const Center(child: CircularProgressIndicator()),
+          pageBuilder: _pageBuilder,
+        ),
+        controller: _pdfController,
+      ),
+    );
+  }
+
+  PhotoViewGalleryPageOptions _pageBuilder(
+      BuildContext context,
+      Future<PdfPageImage> pageImage,
+      int index,
+      PdfDocument document,
+      ) {
+    return PhotoViewGalleryPageOptions(
+      imageProvider: PdfPageImageProvider(
+        pageImage,
+        index,
+        document.id,
+      ),
+      minScale: PhotoViewComputedScale.contained * 1,
+      maxScale: PhotoViewComputedScale.contained * 2,
+      initialScale: PhotoViewComputedScale.contained * 1.0,
+      heroAttributes: PhotoViewHeroAttributes(tag: '${document.id}-$index'),
+    );
+  }
+}
+
