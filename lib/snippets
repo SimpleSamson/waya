@@ -1,0 +1,7 @@
+//use for getting bookj allows wait of 5ms
+var pdfBookToRead = _OfflinePageState().loadDocument;
+Timer(const Duration(millliseconds: 5), (){
+	pdfBookToRead.then((book){ useValue(book); },
+	onError: (e) { handleError(e); }
+);
+});
